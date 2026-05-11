@@ -1,42 +1,41 @@
 const INFO_CARDS = [
   {
-    icon: '🔓',
-    title: 'API Aberta e Gratuita',
-    desc: 'A PokéAPI é 100% pública. Não requer autenticação, API keys ou cadastro. Basta fazer requisições HTTP GET.',
-    color: 'border-green-500/30 hover:border-green-400/60',
-    glow: 'bg-green-500/5',
+    icon: '💻',
+    title: 'Ciência da Computação',
+    desc: 'Projeto acadêmico desenvolvido pelos alunos Felipe e Paulo, do curso de Ciência da Computação da Universidade Paulista (UNIP) - Campus Jundiaí.',
+    color: 'border-poke-red/30 hover:border-poke-red/60',
+    glow: 'bg-poke-red/5',
   },
   {
     icon: '⚡',
-    title: 'Apenas HTTP GET',
-    desc: 'API somente de leitura (consumo). Não é possível criar, editar ou deletar dados. Perfeita para projetos front-end.',
+    title: 'React & TailwindCSS',
+    desc: 'Construído com tecnologias modernas de frontend. Interface responsiva com design em Glassmorphism baseado na identidade visual da Pokébola.',
     color: 'border-poke-yellow/30 hover:border-poke-yellow/60',
     glow: 'bg-poke-yellow/5',
   },
   {
-    icon: '🌐',
-    title: 'REST + JSON',
-    desc: 'Respostas em JSON puro. Suporte completo a CORS, podendo ser consumida diretamente do browser sem proxy.',
-    color: 'border-poke-blue/30 hover:border-poke-blue-light/60',
+    icon: '🔍',
+    title: 'Busca Global',
+    desc: 'Sistema inteligente de pesquisa em memória que permite buscar instantaneamente entre milhares de Pokémon, Itens, Golpes e Regiões.',
+    color: 'border-poke-blue/30 hover:border-poke-blue/60',
     glow: 'bg-poke-blue/5',
   },
   {
-    icon: '📦',
-    title: 'Mais de 50 Endpoints',
-    desc: 'Cobre Pokémon, Moves, Items, Locations, Berries, Evolution, Contests, Games, Machines e muito mais.',
-    color: 'border-purple-500/30 hover:border-purple-400/60',
-    glow: 'bg-purple-500/5',
+    icon: '📚',
+    title: 'Enciclopédia Completa',
+    desc: 'Páginas dinâmicas interligadas (Deep Linking) permitindo navegação fluida entre atributos de Pokémon e detalhes de Itens.',
+    color: 'border-gray-500/30 hover:border-gray-400/60',
+    glow: 'bg-gray-500/5',
   },
 ];
 
 export default function InfoSection() {
   return (
-    <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="text-center mb-12">
-        <h2 className="section-title mb-4">O que é a PokéAPI?</h2>
-        <p className="text-poke-gray-light max-w-2xl mx-auto text-base leading-relaxed">
-          Uma RESTful API repleta de dados do universo Pokémon, mantida pela comunidade e usada por
-          desenvolvedores do mundo todo para criar apps, bots e sites incríveis.
+    <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="text-center mb-12 animate-slide-up">
+        <h2 className="text-3xl sm:text-4xl font-bold text-poke-red mb-4 drop-shadow-sm">Sobre a Pokédex</h2>
+        <p className="text-poke-dark-2 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed glass-panel p-4 rounded-xl border-poke-red/20 inline-block">
+          Uma enciclopédia interativa desenvolvida com foco em alta performance e usabilidade, centralizando todos os dados essenciais para treinadores Pokémon em um só lugar.
         </p>
       </div>
 
@@ -44,24 +43,13 @@ export default function InfoSection() {
         {INFO_CARDS.map(({ icon, title, desc, color, glow }) => (
           <div
             key={title}
-            className={`glass-card p-6 border ${color} ${glow} hover:-translate-y-1 transition-all duration-300`}
+            className={`glass-panel p-6 border-b-4 ${color} ${glow} hover:-translate-y-2 transition-all duration-300 rounded-2xl flex flex-col items-center text-center`}
           >
-            <div className="text-4xl mb-4">{icon}</div>
-            <h3 className="text-white font-bold text-base mb-2">{title}</h3>
-            <p className="text-poke-gray-light text-sm leading-relaxed">{desc}</p>
+            <div className="text-5xl mb-4 drop-shadow-md">{icon}</div>
+            <h3 className="text-poke-dark font-bold text-lg mb-3">{title}</h3>
+            <p className="text-poke-dark-2 text-sm leading-relaxed">{desc}</p>
           </div>
         ))}
-      </div>
-
-      {/* Base URL highlight */}
-      <div className="mt-10 p-6 glass-card border border-poke-red/30 text-center">
-        <p className="text-poke-gray-light text-sm mb-2">URL Base da API</p>
-        <code className="text-poke-yellow font-pixel text-xs sm:text-sm bg-poke-dark px-4 py-2 rounded-lg border border-poke-gray inline-block">
-          https://pokeapi.co/api/v2/
-        </code>
-        <p className="text-poke-gray-light text-xs mt-3">
-          Exemplo: <code className="text-green-400">/pokemon/pikachu</code> retorna todos os dados do Pikachu
-        </p>
       </div>
     </section>
   );

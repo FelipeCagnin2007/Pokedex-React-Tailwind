@@ -24,20 +24,18 @@ export default function HeroSection() {
           {/* Tag */}
           <div className="inline-flex items-center gap-2 bg-poke-red/20 border border-poke-red/40 rounded-full px-4 py-1.5 mb-6 animate-fade-in">
             <span className="w-2 h-2 bg-poke-red rounded-full animate-pulse" />
-            <span className="text-poke-red text-xs font-semibold uppercase tracking-wider">PokéAPI v2 · Ao Vivo</span>
+            <span className="text-poke-red text-xs font-semibold uppercase tracking-wider">Projeto Acadêmico</span>
           </div>
 
           {/* Title */}
           <h1 className="font-pixel text-poke-yellow text-2xl sm:text-3xl lg:text-4xl leading-relaxed mb-6 animate-slide-up">
-            A Pokédex<br />
-            <span className="text-white">Definitiva</span>
+            Pokédex<br />
+            <span className="text-white">UNIP Jundiaí</span>
           </h1>
 
           {/* Subtitle */}
           <p className="text-gray-300 text-lg sm:text-xl leading-relaxed mb-8 animate-slide-up max-w-2xl" style={{ animationDelay: '0.1s' }}>
-            Explore o universo completo de Pokémon com dados em tempo real da{' '}
-            <span className="text-poke-yellow font-semibold">PokéAPI v2</span>.
-            Mais de <span className="text-white font-bold">898 Pokémon</span>, itens, movimentos, locais e muito mais.
+            Desenvolvido por <span className="text-white font-bold">Felipe e Paulo</span>, do curso de Ciência da Computação da UNIP Jundiaí. Este projeto é uma <span className="text-poke-yellow font-semibold">Pokédex Interativa</span> com um banco de dados completo sobre o universo Pokémon, focada em usabilidade e design moderno.
           </p>
 
           {/* CTA Buttons */}
@@ -45,22 +43,14 @@ export default function HeroSection() {
             <Link to="/pokemon" id="hero-explore-btn" className="btn-primary text-center text-sm sm:text-base">
               ⭐ Explorar Pokémon
             </Link>
-            <a
-              href="https://pokeapi.co/docs/v2"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-secondary text-center text-sm sm:text-base"
-            >
-              📖 Ver Documentação ↗
-            </a>
           </div>
 
           {/* Stats row */}
           <div className="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-white/10 animate-fade-in" style={{ animationDelay: '0.4s' }}>
             {[
-              { value: '898+', label: 'Pokémon' },
-              { value: '10k+', label: 'Endpoints' },
-              { value: '100%', label: 'Gratuito' },
+              { value: 'Felipe', label: 'Desenvolvedor' },
+              { value: 'Paulo', label: 'Desenvolvedor' },
+              { value: 'CC', label: 'UNIP Jundiaí' },
             ].map(({ value, label }) => (
               <div key={label} className="text-center">
                 <p className="font-pixel text-poke-yellow text-lg sm:text-2xl">{value}</p>
