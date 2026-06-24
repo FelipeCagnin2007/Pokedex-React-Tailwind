@@ -55,10 +55,16 @@ export function usePeerBattle({ onMessage, onConnect, onDisconnect } = {}) {
   const setupConnection = useCallback((conn) => {
     connRef.current = conn;
 
-    conn.on('open', () => {
+    const handleOpen = () => {
       setStatus('connected');
       onConnect?.();
-    });
+    };
+
+    if (conn.open) {
+      handleOpen();
+    } else {
+      conn.on('open', handleOpen);
+    }
 
     conn.on('data', (data) => {
       if (data?.type === PVP_MSG.PING) {
