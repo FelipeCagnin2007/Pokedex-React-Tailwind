@@ -61,7 +61,7 @@ export default function InfoSection() {
           Tudo que um Treinador Precisa
         </h2>
         <p className="section-subtitle max-w-2xl mx-auto">
-          Da Pokédex completa às batalhas online — uma plataforma feita para fãs de Pokémon que querem mais.
+          Do Atlas completo às batalhas online — uma plataforma feita para fãs de Pokémon que querem mais.
         </p>
       </div>
 

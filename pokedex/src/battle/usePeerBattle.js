@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Peer from 'peerjs';
+import { findMatch, cancelMatchmaking } from '../lib/matchmakingService';
 
 const PEER_CONFIG = {
   // Uses the free PeerJS cloud server (0.peerjs.com)
@@ -140,17 +141,58 @@ export function usePeerBattle({ onMessage, onConnect, onDisconnect } = {}) {
     }
   }, []);
 
+  // ─── Random Matchmaking ────────────────────────────────────────────────
+  const startRandomMatchmaking = useCallback(async (mode) => {
+    cleanup();
+    setRoomId('Procurando...');
+    setIsHost(false);
+    setStatus('waiting'); // Show waiting instantly
+    setError(null);
+
+    const peer = new Peer(PEER_CONFIG);
+    peerRef.current = peer;
+
+    peer.on('open', async (pid) => {
+      setPeerId(pid);
+      
+      // Try to find a match
+      const targetId = await findMatch(pid, mode);
+      if (targetId) {
+        // Match found! We act as the connector.
+        setStatus('connecting');
+        const conn = peer.connect(targetId, { reliable: true });
+        setupConnection(conn);
+      } else {
+        // No match found, we wait in the queue.
+        setStatus('waiting');
+        setIsHost(true); // Technically we are waiting for a connection now
+      }
+    });
+
+    peer.on('connection', (conn) => {
+      // Someone found us in the queue!
+      setStatus('connecting');
+      setupConnection(conn);
+    });
+
+    peer.on('error', (err) => {
+      setError(err.message || 'Erro no matchmaking.');
+      setStatus('error');
+    });
+  }, [cleanup, setupConnection]);
+
   // ─── Disconnect ────────────────────────────────────────────────────────
   const disconnect = useCallback(() => {
     sendMessage({ type: PVP_MSG.FORFEIT });
+    if (peerId) cancelMatchmaking(peerId);
     cleanup();
     setStatus('idle');
     setRoomId(null);
     setPeerId(null);
-  }, [sendMessage, cleanup]);
+  }, [sendMessage, cleanup, peerId]);
 
   return {
     peerId, roomId, status, error, isHost,
-    createRoom, joinRoom, sendMessage, disconnect,
+    createRoom, joinRoom, startRandomMatchmaking, sendMessage, disconnect,
   };
 }

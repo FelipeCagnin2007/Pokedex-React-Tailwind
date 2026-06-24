@@ -5,27 +5,31 @@ const CACHE_TTL = 60 * 60 * 1000; // 1 hour in ms
 
 // ─── Cache helpers ─────────────────────────────────────────────────────────────
 
-function cacheGet(key) {
-  try {
-    const item = localStorage.getItem(`pokedex_${key}`);
-    if (!item) return null;
-    const { data, timestamp } = JSON.parse(item);
-    if (Date.now() - timestamp > CACHE_TTL) {
-      localStorage.removeItem(`pokedex_${key}`);
-      return null;
+const memoryCache = new Map();
+
+// Clear legacy localStorage cache that was causing quota errors for Supabase
+try {
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key?.startsWith('pokedex_')) {
+      localStorage.removeItem(key);
+      i--; // Adjust index since we removed an item
     }
-    return data;
-  } catch {
+  }
+} catch { /* ignore */ }
+
+function cacheGet(key) {
+  const item = memoryCache.get(key);
+  if (!item) return null;
+  if (Date.now() - item.timestamp > CACHE_TTL) {
+    memoryCache.delete(key);
     return null;
   }
+  return item.data;
 }
 
 function cacheSet(key, data) {
-  try {
-    localStorage.setItem(`pokedex_${key}`, JSON.stringify({ data, timestamp: Date.now() }));
-  } catch {
-    // Storage full — silently fail
-  }
+  memoryCache.set(key, { data, timestamp: Date.now() });
 }
 
 // ─── Core fetch ────────────────────────────────────────────────────────────────

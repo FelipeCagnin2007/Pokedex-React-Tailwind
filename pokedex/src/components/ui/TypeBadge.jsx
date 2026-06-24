@@ -40,11 +40,13 @@ const TYPE_EMOJIS = {
   normal:   '⚪',
 };
 
-export default function TypeBadge({ type, showEmoji = false, size = 'sm' }) {
+export default function TypeBadge({ type, showEmoji = false, size = 'sm', small = false }) {
   const style = TYPE_STYLES[type] || 'bg-slate-400 text-white';
   const emoji = TYPE_EMOJIS[type] || '';
 
-  const sizeClass = size === 'lg'
+  const sizeClass = small
+    ? 'px-1.5 py-0.5 text-[9px] gap-0.5'
+    : size === 'lg'
     ? 'px-3.5 py-1 text-sm gap-1.5'
     : 'px-2.5 py-0.5 text-xs gap-1';
 

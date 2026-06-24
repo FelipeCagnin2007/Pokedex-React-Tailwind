@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useBattle } from '../../context/BattleContext';
-import { fetchPokemon, fetchPokemonById, fetchAPI } from '../../api/pokeapi';
-import { buildBattlePokemon } from '../../battle/battleEngine';
+import { useSeason } from '../../context/SeasonContext';
+import { generateRandomTeam } from '../../battle/teamGenerator';
 import BattleArena from './BattleArena';
 import Spinner from '../../components/ui/Spinner';
 import { usePageMeta } from '../../hooks/usePageMeta';
@@ -16,45 +16,23 @@ const DIFFICULTIES = [
 export default function BattleCPU() {
   usePageMeta('Batalha vs CPU', 'Enfrente a inteligência artificial Pokémon em três dificuldades.');
   const { selectedTeam, difficulty, setDifficulty } = useBattle();
+  const { currentSeason, validate } = useSeason();
   const [cpuTeam, setCpuTeam] = useState([]);
+  const [mode, setMode] = useState('normal'); // 'normal' | 'seasonal'
   const [loading, setLoading] = useState(false);
   const [started, setStarted] = useState(false);
 
   async function generateCPUTeam() {
+    if (mode === 'seasonal') {
+      const violations = validate(selectedTeam);
+      if (violations.length > 0) {
+        return alert('Sua equipe é inválida para Batalha Sazonal:\n\n' + violations.join('\n'));
+      }
+    }
+
     setLoading(true);
     try {
-      // Pick 6 random Pokémon from the first 386 (classic) 
-      const picks = new Set();
-      while (picks.size < 6) picks.add(Math.floor(Math.random() * 386) + 1);
-      
-      const team = await Promise.all([...picks].map(async id => {
-        const poke = await fetchPokemonById(id);
-        const moveRefs = (poke.moves || []).slice(0, 8);
-        const moveDetails = await Promise.all(
-          moveRefs.map(m => fetchAPI(m.move.url).catch(() => null))
-        );
-        const validMoves = moveDetails
-          .filter(m => m && m.power !== null && m.power > 0)
-          .slice(0, 4)
-          .map(m => ({
-            name: m.name,
-            power: m.power || 40,
-            accuracy: m.accuracy || 100,
-            pp: m.pp || 10,
-            type: m.type,
-            damage_class: m.damage_class,
-          }));
-
-        return buildBattlePokemon(poke, validMoves.length >= 2 ? validMoves : validMoves.concat([{
-          name: 'tackle',
-          power: 40,
-          accuracy: 100,
-          pp: 35,
-          type: { name: 'normal' },
-          damage_class: { name: 'physical' },
-        }]).slice(0, 4));
-      }));
-
+      const team = await generateRandomTeam(mode === 'seasonal' ? currentSeason : null);
       setCpuTeam(team);
     } catch(e) {
       console.error(e);
@@ -86,7 +64,36 @@ export default function BattleCPU() {
       <Link to="/battle" className="btn-ghost mb-6 inline-flex">← Voltar ao Lobby</Link>
 
       <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white mb-2">VS Computador</h1>
-      <p className="text-slate-500 dark:text-slate-400 mb-8">Configure a dificuldade e inicie a batalha.</p>
+      <p className="text-slate-500 dark:text-slate-400 mb-8">Configure a dificuldade, o modo e inicie a batalha.</p>
+
+      {/* Mode Selection */}
+      {currentSeason && (
+        <div className="mb-6">
+          <h2 className="font-semibold text-slate-900 dark:text-white mb-3">Modo de Jogo</h2>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setMode('normal')}
+              className={`flex-1 py-3 px-4 rounded-xl border-2 text-sm font-bold transition-all ${
+                mode === 'normal'
+                  ? 'border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+                  : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 bg-white dark:bg-slate-800'
+              }`}
+            >
+              🎮 Normal
+            </button>
+            <button
+              onClick={() => setMode('seasonal')}
+              className={`flex-1 py-3 px-4 rounded-xl border-2 text-sm font-bold transition-all ${
+                mode === 'seasonal'
+                  ? 'border-amber-500 bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
+                  : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 bg-white dark:bg-slate-800'
+              }`}
+            >
+              {currentSeason.emoji} Sazonal ({currentSeason.name})
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Difficulty */}
       <div className="mb-8">

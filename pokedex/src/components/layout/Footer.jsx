@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
 const FOOTER_LINKS = {
-  Pokédex: [
+  'The Pokemon Atlas': [
     { to: '/pokemon',   label: 'Pokémon' },
     { to: '/moves',     label: 'Moves' },
     { to: '/items',     label: 'Itens' },
@@ -39,7 +39,7 @@ export default function Footer() {
                   <circle cx="50" cy="50" r="9"  fill="#FFFFFF" />
                 </svg>
               </div>
-              <span className="font-bold text-slate-900 dark:text-white text-lg">Pokédex</span>
+              <span className="font-bold text-slate-900 dark:text-white text-lg">The Pokemon Atlas</span>
             </div>
             <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-4">
               Enciclopédia Pokémon completa com dados em tempo real da{' '}
@@ -95,7 +95,7 @@ export default function Footer() {
 
         <div className="border-t border-slate-200 dark:border-slate-700 mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-slate-400 dark:text-slate-500 text-xs">
-            © {new Date().getFullYear()} Pokédex. Feito com ❤️ e dados da PokéAPI v2.
+            © {new Date().getFullYear()} The Pokemon Atlas. Feito com ❤️ e dados da PokéAPI v2.
           </p>
           <div className="flex items-center gap-4">
             <span className="text-slate-300 dark:text-slate-600 text-xs">

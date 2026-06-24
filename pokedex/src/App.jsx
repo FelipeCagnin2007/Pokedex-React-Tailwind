@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
+import { AuthProvider } from './context/AuthContext';
+import { SeasonProvider } from './context/SeasonContext';
 import { BattleProvider } from './context/BattleContext';
 
 // Pages
@@ -19,6 +21,11 @@ import AbilityDetailView from './pages/AbilityDetailView';
 import MoveDetailView from './pages/MoveDetailView';
 import ItemDetailView from './pages/ItemDetailView';
 import RegionDetailView from './pages/RegionDetailView';
+
+// Auth pages
+import LoginPage from './pages/auth/LoginPage';
+import RankingPage from './pages/RankingPage';
+import ProfilePage from './pages/ProfilePage';
 
 // Battle pages
 import BattleLobby from './pages/battle/BattleLobby';
@@ -47,41 +54,47 @@ function BattleLayout({ children }) {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
-        <Navbar />
-        <div className="flex-1">
-          <Routes>
-            {/* Main pages */}
-            <Route path="/" element={<Home />} />
-            <Route path="/contests" element={<Contests />} />
-            <Route path="/encounters" element={<Encounters />} />
-            <Route path="/games" element={<Games />} />
-            <Route path="/items" element={<Items />} />
-            <Route path="/locations" element={<Locations />} />
-            <Route path="/machines" element={<Machines />} />
-            <Route path="/moves" element={<Moves />} />
-            <Route path="/pokemon" element={<Pokemon />} />
+    <AuthProvider>
+      <SeasonProvider>
+        <BrowserRouter>
+        <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-200">
+          <Navbar />
+          <div className="flex-grow">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/ranking" element={<RankingPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/contests" element={<Contests />} />
+              <Route path="/encounters" element={<Encounters />} />
+              <Route path="/games" element={<Games />} />
+              <Route path="/items" element={<Items />} />
+              <Route path="/locations" element={<Locations />} />
+              <Route path="/machines" element={<Machines />} />
+              <Route path="/moves" element={<Moves />} />
+              <Route path="/pokemon" element={<Pokemon />} />
 
-            {/* Detail pages */}
-            <Route path="/pokemon/:id" element={<PokemonDetailView />} />
-            <Route path="/type/:id" element={<TypeDetailView />} />
-            <Route path="/ability/:id" element={<AbilityDetailView />} />
-            <Route path="/move/:id" element={<MoveDetailView />} />
-            <Route path="/item/:id" element={<ItemDetailView />} />
-            <Route path="/region/:id" element={<RegionDetailView />} />
+              {/* Detail pages */}
+              <Route path="/pokemon/:id" element={<PokemonDetailView />} />
+              <Route path="/type/:id" element={<TypeDetailView />} />
+              <Route path="/ability/:id" element={<AbilityDetailView />} />
+              <Route path="/move/:id" element={<MoveDetailView />} />
+              <Route path="/item/:id" element={<ItemDetailView />} />
+              <Route path="/region/:id" element={<RegionDetailView />} />
 
-            {/* Battle pages — wrapped with BattleProvider */}
-            <Route path="/battle" element={<BattleLayout><BattleLobby /></BattleLayout>} />
-            <Route path="/battle/select" element={<BattleLayout><BattleSelect /></BattleLayout>} />
-            <Route path="/battle/cpu" element={<BattleLayout><BattleCPU /></BattleLayout>} />
-            <Route path="/battle/pvp" element={<BattleLayout><BattlePvP /></BattleLayout>} />
+              {/* Battle pages — wrapped with BattleProvider */}
+              <Route path="/battle" element={<BattleLayout><BattleLobby /></BattleLayout>} />
+              <Route path="/battle/select" element={<BattleLayout><BattleSelect /></BattleLayout>} />
+              <Route path="/battle/cpu" element={<BattleLayout><BattleCPU /></BattleLayout>} />
+              <Route path="/battle/pvp" element={<BattleLayout><BattlePvP /></BattleLayout>} />
 
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </div>
+          <Footer />
         </div>
-        <Footer />
-      </div>
-    </BrowserRouter>
+        </BrowserRouter>
+      </SeasonProvider>
+    </AuthProvider>
   );
 }

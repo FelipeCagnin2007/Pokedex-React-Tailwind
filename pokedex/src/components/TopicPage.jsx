@@ -89,23 +89,23 @@ export default function TopicPage({ title, description, tabs }) {
     <main className="min-h-screen relative z-10 py-8">
       {/* Header section */}
       <div className="glass-panel mx-4 sm:mx-6 lg:mx-auto max-w-7xl mb-8 p-6 sm:p-8 rounded-2xl animate-fade-in">
-        <h1 className="text-3xl sm:text-4xl font-bold text-poke-red mb-2">{title}</h1>
-        <p className="text-poke-dark-2 text-sm sm:text-base max-w-3xl leading-relaxed">{description}</p>
+        <h1 className="text-3xl sm:text-4xl font-bold text-poke-red dark:text-red-500 mb-2">{title}</h1>
+        <p className="text-poke-dark-2 dark:text-slate-300 text-sm sm:text-base max-w-3xl leading-relaxed">{description}</p>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Navigation Tabs */}
         {tabs.length > 1 && (
-          <div className="flex flex-wrap gap-1 mb-6 border-b border-poke-gray pb-2">
+          <div className="flex flex-wrap gap-1 mb-6 border-b border-poke-gray dark:border-slate-700 pb-2">
             {tabs.map((t, i) => (
               <button
                 key={t.id}
                 onClick={() => handleTabChange(i)}
                 className={`px-6 py-2.5 text-sm font-bold transition-all duration-200 border-b-2 ${
                   activeTab === i
-                    ? 'border-poke-red text-poke-red bg-white/50 backdrop-blur-sm'
-                    : 'border-transparent text-poke-dark hover:text-poke-red hover:bg-white/30 backdrop-blur-sm'
+                    ? 'border-poke-red dark:border-red-500 text-poke-red dark:text-red-400 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm'
+                    : 'border-transparent text-poke-dark dark:text-slate-400 hover:text-poke-red dark:hover:text-red-400 hover:bg-white/30 dark:hover:bg-slate-800/30 backdrop-blur-sm'
                 }`}
               >
                 {t.label}
@@ -117,7 +117,7 @@ export default function TopicPage({ title, description, tabs }) {
         {/* Action Bar (Search & Results Info) */}
         {!detail && !detailLoading && (
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-            <div className="text-sm text-poke-dark-2">
+            <div className="text-sm text-poke-dark-2 dark:text-slate-400">
               {data && (
                 <>
                   Mostrando <span className="font-bold">{(page - 1) * LIMIT + 1}–{Math.min(page * LIMIT, data.count)}</span> de <span className="font-bold">{data.count}</span>
@@ -131,9 +131,9 @@ export default function TopicPage({ title, description, tabs }) {
                 placeholder={`Search ${tab.label}...`}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="flex-1 bg-white border border-poke-gray py-1.5 px-3 text-sm focus:outline-none focus:border-poke-blue transition-colors"
+                className="flex-1 bg-white dark:bg-slate-800 border border-poke-gray dark:border-slate-700 py-1.5 px-3 text-sm focus:outline-none focus:border-poke-blue dark:focus:border-blue-500 dark:text-white transition-colors"
               />
-              <button type="submit" className="bg-poke-gray-light border border-l-0 border-poke-gray px-3 text-poke-dark hover:bg-poke-gray transition-colors">
+              <button type="submit" className="bg-poke-gray-light dark:bg-slate-700 border border-l-0 border-poke-gray dark:border-slate-700 px-3 text-poke-dark dark:text-slate-300 hover:bg-poke-gray dark:hover:bg-slate-600 transition-colors">
                 🔍
               </button>
             </form>
@@ -183,7 +183,7 @@ export default function TopicPage({ title, description, tabs }) {
             {data && !loading && (
               <>
                 {displayResults.length === 0 ? (
-                  <p className="text-center text-poke-dark-2 py-12 border border-poke-gray bg-poke-gray-light">Nenhum resultado.</p>
+                  <p className="text-center text-poke-dark-2 dark:text-slate-400 py-12 border border-poke-gray dark:border-slate-700 bg-poke-gray-light dark:bg-slate-800/50">Nenhum resultado.</p>
                 ) : (
                   <div className="glass-panel rounded-xl overflow-hidden">
                     {displayResults.map((item) => (

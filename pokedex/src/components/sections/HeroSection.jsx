@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { useSeason } from '../../context/SeasonContext';
+import { fetchAPI } from '../../api/pokeapi';
 
 const FEATURED = [
   { id: 6,   name: 'Charizard' },
@@ -17,16 +19,46 @@ const STATS = [
 ];
 
 export default function HeroSection() {
+  const { currentSeason } = useSeason();
+  const [featuredList, setFeaturedList] = useState(FEATURED);
   const [featured, setFeatured] = useState(FEATURED[0]);
   const [fade, setFade] = useState(true);
+
+  // Load season specific pokemon
+  useEffect(() => {
+    if (currentSeason?.rules?.monotype) {
+      fetchAPI(`https://pokeapi.co/api/v2/type/${currentSeason.rules.monotype}`)
+        .then(data => {
+          if (data && data.pokemon) {
+            // Get URLs, extract IDs, take 5 random ones
+            const allPokes = data.pokemon;
+            const shuffled = [...allPokes].sort(() => 0.5 - Math.random()).slice(0, 5);
+            const newList = shuffled.map(p => {
+              const parts = p.pokemon.url.split('/').filter(Boolean);
+              const id = parseInt(parts[parts.length - 1], 10);
+              return { id, name: p.pokemon.name };
+            }).filter(p => p.id < 1000); // Filter out mega/forms if any
+
+            if (newList.length > 0) {
+              setFeaturedList(newList);
+              setFeatured(newList[0]);
+            }
+          }
+        })
+        .catch(console.error);
+    }
+  }, [currentSeason]);
 
   useEffect(() => {
     let i = 0;
     const interval = setInterval(() => {
       setFade(false);
       setTimeout(() => {
-        i = (i + 1) % FEATURED.length;
-        setFeatured(FEATURED[i]);
+        setFeaturedList(prevList => {
+          i = (i + 1) % prevList.length;
+          setFeatured(prevList[i]);
+          return prevList;
+        });
         setFade(true);
       }, 350);
     }, 3200);
@@ -65,22 +97,39 @@ export default function HeroSection() {
           {/* Left: Text */}
           <div>
             {/* Badge */}
-            <div
-              className="inline-flex items-center gap-2 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 rounded-full px-4 py-1.5 mb-6 animate-fade-in"
-            >
-              <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-              <span className="text-red-600 dark:text-red-400 text-xs font-semibold uppercase tracking-wider">
-                PokéAPI v2 • Dados em Tempo Real
-              </span>
-            </div>
+            {currentSeason ? (
+              <div
+                className="inline-flex items-center gap-2 border rounded-full px-4 py-1.5 mb-6 animate-fade-in"
+                style={{ backgroundColor: 'color-mix(in srgb, var(--season-accent) 15%, transparent)', borderColor: 'color-mix(in srgb, var(--season-accent) 30%, transparent)' }}
+              >
+                <span className="text-sm">{currentSeason.emoji}</span>
+                <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--season-accent)' }}>
+                  Temporada Atual: {currentSeason.name}
+                </span>
+              </div>
+            ) : (
+              <div
+                className="inline-flex items-center gap-2 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 rounded-full px-4 py-1.5 mb-6 animate-fade-in"
+              >
+                <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                <span className="text-red-600 dark:text-red-400 text-xs font-semibold uppercase tracking-wider">
+                  PokéAPI v2 • Dados em Tempo Real
+                </span>
+              </div>
+            )}
 
             {/* Title */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-white leading-[1.1] mb-5 animate-slide-up tracking-tight">
-              A Pokédex que{' '}
-              <span className="gradient-text">
-                Treinadores
-              </span>{' '}
-              Merecem
+            <h1 className="font-extrabold text-slate-900 dark:text-white leading-[1.1] mb-5 animate-slide-up tracking-tight">
+              <span className="block text-4xl sm:text-5xl lg:text-6xl mb-2 text-poke-red dark:text-red-500">
+                The Pokemon Atlas
+              </span>
+              <span className="text-xl sm:text-2xl lg:text-3xl text-slate-700 dark:text-slate-300">
+                a Pokedex que{' '}
+                <span className="gradient-text">
+                  Treinadores
+                </span>{' '}
+                Merecem
+              </span>
             </h1>
 
             {/* Subtitle */}
@@ -99,7 +148,7 @@ export default function HeroSection() {
               style={{ animationDelay: '0.2s' }}
             >
               <Link to="/pokemon" id="hero-explore-btn" className="btn-primary text-base px-6 py-3">
-                ⭐ Explorar Pokédex
+                ⭐ Explorar Atlas
               </Link>
               <Link to="/battle" id="hero-battle-btn" className="btn-battle text-base px-6 py-3">
                 ⚔️ Iniciar Batalha
@@ -128,7 +177,14 @@ export default function HeroSection() {
           <div className="hidden lg:flex flex-col items-center justify-center relative">
             <div className="relative w-72 h-72 xl:w-80 xl:h-80">
               {/* Glow ring */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-red-400/20 to-orange-400/20 blur-2xl scale-110" />
+              <div 
+                className="absolute inset-0 rounded-full blur-2xl scale-110" 
+                style={{ 
+                  background: currentSeason 
+                    ? `radial-gradient(circle, color-mix(in srgb, var(--season-accent) 40%, transparent) 0%, transparent 70%)` 
+                    : 'radial-gradient(circle, rgba(248,113,113,0.3) 0%, transparent 70%)'
+                }} 
+              />
 
               {/* Pokémon image */}
               <img
@@ -139,7 +195,7 @@ export default function HeroSection() {
                   fade ? 'opacity-100 scale-100' : 'opacity-0 scale-90'
                 }`}
                 loading="eager"
-                fetchpriority="high"
+                fetchPriority="high"
               />
 
               {/* Name badge */}

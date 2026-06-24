@@ -65,11 +65,14 @@ export function calculateDamage(attacker, defender, move) {
   const hit = didHit(move.accuracy);
   if (!hit) return { damage: 0, critical: false, effectiveness: 1, hit: false };
 
-  const level = 50; // default battle level
+  const level = 50;
   const isSpecial = move.damage_class?.name === 'special';
 
-  const A = isSpecial ? (attacker.stats?.spAtk || 50) : (attacker.stats?.attack || 50);
+  let A = isSpecial ? (attacker.stats?.spAtk || 50) : (attacker.stats?.attack || 50);
   const D = isSpecial ? (defender.stats?.spDef || 50) : (defender.stats?.defense || 50);
+
+  // Apply Choice Band/Specs boost (_atkBoost flag set by useBattleState)
+  if (move._atkBoost) A = Math.floor(A * move._atkBoost);
 
   const base = (((2 * level / 5 + 2) * move.power * (A / D)) / 50) + 2;
 
@@ -79,9 +82,7 @@ export function calculateDamage(attacker, defender, move) {
   const defTypes = defender.types || [];
   const effectiveness = getTypeEffectiveness(move.type?.name, defTypes);
 
-  // Random factor: 0.85 to 1.0
   const random = 0.85 + Math.random() * 0.15;
-
   const damage = Math.max(1, Math.floor(base * critMult * stab * effectiveness * random));
 
   return { damage, critical, effectiveness, hit: true };

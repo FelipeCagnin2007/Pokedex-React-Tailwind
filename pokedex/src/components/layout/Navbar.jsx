@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
 import GlobalSearch from '../ui/GlobalSearch';
 import { useTheme } from '../../context/ThemeContext';
+import { useAuth } from '../../context/AuthContext';
 
 const NAV_ITEMS = [
   { to: '/pokemon',   label: 'Pokémon',  icon: '🔴' },
@@ -9,6 +10,7 @@ const NAV_ITEMS = [
   { to: '/items',     label: 'Itens',    icon: '🎒' },
   { to: '/locations', label: 'Regiões',  icon: '🗺️' },
   { to: '/games',     label: 'Games',    icon: '🎮' },
+  { to: '/ranking',   label: 'Ranking',  icon: '🏆' },
   { to: '/battle',    label: 'Batalha',  icon: '⚔️', highlight: true },
 ];
 
@@ -16,6 +18,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { isDark, toggle } = useTheme();
+  const { user, profile, signOut } = useAuth();
   const location = useLocation();
 
   useEffect(() => {
@@ -36,31 +39,31 @@ export default function Navbar() {
             : 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-slate-200/40 dark:border-slate-700/40'
         }`}
       >
-        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3 h-16">
+        <nav className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-2 xl:gap-4 h-16">
 
             {/* Logo */}
             <Link
               to="/"
               className="flex items-center gap-2.5 group flex-shrink-0"
-              aria-label="Pokédex — Página inicial"
+              aria-label="The Pokemon Atlas — Página inicial"
             >
               <div className="w-8 h-8 drop-shadow-sm group-hover:animate-wiggle transition-transform">
                 <PokeballSVG />
               </div>
               <span className="font-bold text-slate-900 dark:text-white text-lg tracking-tight hidden sm:block group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
-                Pokédex
+                The Pokemon Atlas
               </span>
             </Link>
 
             {/* Desktop Nav */}
-            <div className="hidden lg:flex items-center ml-2">
+            <div className="hidden lg:flex items-center ml-1 xl:ml-2">
               {NAV_ITEMS.map(({ to, label, icon, highlight }) => (
                 <NavLink
                   key={to}
                   to={to}
                   className={({ isActive }) =>
-                    `flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    `flex items-center gap-1.5 px-2 xl:px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${
                       highlight
                         ? isActive
                           ? 'bg-red-600 text-white shadow-glow-red'
@@ -78,7 +81,7 @@ export default function Navbar() {
             </div>
 
             {/* Search — flex-1 */}
-            <div className="flex-1 max-w-xs sm:max-w-sm mx-2 lg:mx-3">
+            <div className="flex-1 min-w-[200px] max-w-xs sm:max-w-sm lg:max-w-md mx-2 lg:mx-3">
               <GlobalSearch />
             </div>
 
@@ -99,6 +102,33 @@ export default function Navbar() {
               )}
             </button>
 
+            {/* Auth button */}
+            {user ? (
+              <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+                <Link
+                  to="/ranking"
+                  title="Ranking"
+                  className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 text-xs font-bold hover:bg-amber-100 transition-colors"
+                >
+                  🏆 {profile?.mmr || 1000}
+                </Link>
+                <Link
+                  to="/profile"
+                  title={`Perfil de ${profile?.username || user.email}`}
+                  className="p-2 rounded-lg text-slate-500 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all flex-shrink-0 text-xs flex items-center gap-1"
+                >
+                  <span className="text-base">👤</span>
+                  <span className="hidden sm:inline">{profile?.username || 'Perfil'}</span>
+                </Link>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-600 text-white text-xs font-bold hover:bg-red-700 transition-colors flex-shrink-0"
+              >
+                🔑 <span className="hidden sm:inline">Login</span>
+              </Link>
+            )}
             {/* Mobile menu button */}
             <button
               id="mobile-menu-btn"

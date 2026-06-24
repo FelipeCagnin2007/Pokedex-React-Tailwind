@@ -8,7 +8,7 @@ import { useEffect } from 'react';
 export function usePageMeta(title, description) {
   useEffect(() => {
     const prev = document.title;
-    document.title = title ? `${title} | Pokédex` : 'Pokédex | Enciclopédia Pokémon Completa';
+    document.title = title ? `${title} | The Pokemon Atlas` : 'The Pokemon Atlas | A Enciclopédia Pokémon Completa';
 
     let metaDesc = document.querySelector('meta[name="description"]');
     const prevContent = metaDesc?.content || '';

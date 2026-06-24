@@ -1,16 +1,30 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { usePageMeta } from '../../hooks/usePageMeta';
 import { useBattle } from '../../context/BattleContext';
+import { useSeason } from '../../context/SeasonContext';
 
 export default function BattleLobby() {
   usePageMeta('Batalha Pokémon', 'Desafie amigos em batalhas PvP online ou treine contra a IA. Forme sua equipe de 6 Pokémon e entre na arena!');
   const { selectedTeam } = useBattle();
+  const { currentSeason, validate } = useSeason();
+  const navigate = useNavigate();
   const hasTeam = selectedTeam.length === 6;
+
+  const handlePvPClick = (e, mode, matchType) => {
+    e.preventDefault();
+    if (mode === 'seasonal') {
+      const violations = validate(selectedTeam);
+      if (violations.length > 0) {
+        return alert('Equipe inválida para Batalha Sazonal:\n\n' + violations.join('\n'));
+      }
+    }
+    navigate(`/battle/pvp?mode=${mode}&match=${matchType}`);
+  };
 
   return (
     <main className="min-h-[80vh] flex flex-col items-center justify-center px-4 py-16 relative overflow-hidden">
       {/* Animated bg */}
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900" aria-hidden="true" />
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900" aria-hidden="true" />
       <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
         <div className="absolute -top-20 -left-20 w-96 h-96 bg-red-500/10 rounded-full blur-3xl animate-float" />
         <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-float-slow" />
@@ -23,21 +37,21 @@ export default function BattleLobby() {
             <span className="text-2xl">⚔️</span>
             <span className="text-red-400 font-bold uppercase tracking-wider text-sm">Arena de Batalha</span>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-white mb-4 tracking-tight">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white mb-4 tracking-tight">
             Escolha seu <span className="gradient-text">Destino</span>
           </h1>
-          <p className="text-slate-400 text-lg max-w-lg mx-auto">
+          <p className="text-slate-600 dark:text-slate-400 text-lg max-w-lg mx-auto">
             Monte sua equipe de 6 Pokémon e entre na arena. Desafie um amigo ou enfrente a IA.
           </p>
         </div>
 
         {/* Team status */}
         {selectedTeam.length > 0 && (
-          <div className="glass-dark rounded-2xl p-4 mb-8 flex items-center justify-between gap-4 max-w-xl mx-auto">
+          <div className="bg-white/50 dark:bg-slate-800/50 backdrop-blur-md border border-slate-200 dark:border-slate-700 rounded-2xl p-4 mb-8 flex items-center justify-between gap-4 max-w-xl mx-auto shadow-sm">
             <div className="flex items-center gap-2">
               <span className="text-xl">🎯</span>
               <div>
-                <p className="text-white font-semibold text-sm">
+                <p className="text-slate-900 dark:text-white font-semibold text-sm">
                   {hasTeam ? 'Equipe completa!' : `${selectedTeam.length}/6 Pokémon selecionados`}
                 </p>
                 <div className="flex gap-1 mt-1">
@@ -59,69 +73,89 @@ export default function BattleLobby() {
         )}
 
         {/* Mode cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
           {/* CPU */}
-          <div className="relative group">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-indigo-600/20 rounded-3xl blur-lg group-hover:from-blue-600/30 group-hover:to-indigo-600/30 transition-all duration-300" />
-            <div className="relative border border-blue-500/30 rounded-3xl p-8 bg-slate-800/80 backdrop-blur-sm hover:border-blue-400/60 transition-all duration-300">
+          <div className="relative group flex flex-col h-full">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-indigo-600/10 dark:from-blue-600/20 dark:to-indigo-600/20 rounded-3xl blur-lg group-hover:from-blue-600/20 group-hover:to-indigo-600/20 dark:group-hover:from-blue-600/30 dark:group-hover:to-indigo-600/30 transition-all duration-300" />
+            <div className="relative flex flex-col h-full border border-blue-200 dark:border-blue-500/30 rounded-3xl p-8 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm hover:border-blue-300 dark:hover:border-blue-400/60 transition-all duration-300 shadow-sm">
               <div className="text-5xl mb-5">🤖</div>
-              <h2 className="text-2xl font-bold text-white mb-3">VS Computador</h2>
-              <p className="text-slate-400 text-sm leading-relaxed mb-6">
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">VS Computador</h2>
+              <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6 flex-grow">
                 Enfrente a IA Pokémon em três níveis de dificuldade. Aprenda estratégias e pratique
                 sem pressão. Ideal para iniciantes e para testar novas equipes.
               </p>
               <div className="flex gap-2 flex-wrap mb-6">
                 {['Fácil', 'Normal', 'Difícil'].map(d => (
-                  <span key={d} className="text-xs bg-blue-500/20 text-blue-300 border border-blue-500/30 px-2.5 py-1 rounded-full font-medium">
+                  <span key={d} className="text-xs bg-blue-50 text-blue-600 dark:bg-blue-500/20 dark:text-blue-300 border border-blue-200 dark:border-blue-500/30 px-2.5 py-1 rounded-full font-medium">
                     {d}
                   </span>
                 ))}
               </div>
-              {hasTeam ? (
-                <Link to="/battle/cpu" id="battle-cpu-btn" className="btn-primary w-full justify-center">
-                  ▶ Batalhar contra CPU
-                </Link>
-              ) : (
-                <Link to="/battle/select" id="battle-cpu-select-btn" className="btn-secondary w-full justify-center">
-                  Selecionar equipe primeiro
-                </Link>
-              )}
+              <div className="mt-auto">
+                {hasTeam ? (
+                  <Link to="/battle/cpu" id="battle-cpu-btn" className="btn-primary w-full justify-center">
+                    ▶ Batalhar contra CPU
+                  </Link>
+                ) : (
+                  <Link to="/battle/select" id="battle-cpu-select-btn" className="btn-secondary w-full justify-center">
+                    Selecionar equipe primeiro
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
 
           {/* PvP */}
-          <div className="relative group">
-            <div className="absolute inset-0 bg-gradient-to-br from-red-600/20 to-orange-600/20 rounded-3xl blur-lg group-hover:from-red-600/30 group-hover:to-orange-600/30 transition-all duration-300" />
-            <div className="relative border border-red-500/30 rounded-3xl p-8 bg-slate-800/80 backdrop-blur-sm hover:border-red-400/60 transition-all duration-300">
+          <div className="relative group flex flex-col h-full">
+            <div className="absolute inset-0 bg-gradient-to-br from-red-600/10 to-orange-600/10 dark:from-red-600/20 dark:to-orange-600/20 rounded-3xl blur-lg group-hover:from-red-600/20 group-hover:to-orange-600/20 dark:group-hover:from-red-600/30 dark:group-hover:to-orange-600/30 transition-all duration-300" />
+            <div className="relative flex flex-col h-full border border-red-200 dark:border-red-500/30 rounded-3xl p-8 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm hover:border-red-300 dark:hover:border-red-400/60 transition-all duration-300 shadow-sm">
               <div className="text-5xl mb-5">🌐</div>
-              <h2 className="text-2xl font-bold text-white mb-3">Batalha PvP Online</h2>
-              <p className="text-slate-400 text-sm leading-relaxed mb-6">
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">Batalha PvP Online</h2>
+              <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6 flex-grow">
                 Desafie um amigo em tempo real via conexão P2P direta no navegador. Crie uma sala,
                 compartilhe o código e batalhe de qualquer lugar.
               </p>
               <div className="flex gap-2 flex-wrap mb-6">
-                {['Conexão direta', 'Sem cadastro', 'Tempo real'].map(t => (
-                  <span key={t} className="text-xs bg-red-500/20 text-red-300 border border-red-500/30 px-2.5 py-1 rounded-full font-medium">
+                {['Normal', 'Sazonal', 'Grupo', 'Aleatório'].map(t => (
+                  <span key={t} className="text-xs bg-red-50 text-red-600 dark:bg-red-500/20 dark:text-red-300 border border-red-200 dark:border-red-500/30 px-2.5 py-1 rounded-full font-medium">
                     {t}
                   </span>
                 ))}
               </div>
-              {hasTeam ? (
-                <Link to="/battle/pvp" id="battle-pvp-btn" className="btn-battle w-full justify-center">
-                  ⚔️ Batalha PvP
-                </Link>
-              ) : (
-                <Link to="/battle/select" id="battle-pvp-select-btn" className="btn-secondary w-full justify-center">
-                  Selecionar equipe primeiro
-                </Link>
-              )}
+              
+              <div className="mt-auto">
+                {hasTeam ? (
+                  <div className="flex flex-col gap-3">
+                    <div className="grid grid-cols-2 gap-2">
+                      <button onClick={(e) => handlePvPClick(e, 'normal', 'group')} className="btn-secondary text-xs px-2 py-2 flex flex-col items-center gap-1 bg-slate-50 hover:bg-slate-100 dark:bg-slate-700 dark:hover:bg-slate-600">
+                        <span className="text-lg">👥</span> Normal (Grupo)
+                      </button>
+                      <button onClick={(e) => handlePvPClick(e, 'seasonal', 'group')} className="btn-battle text-xs px-2 py-2 flex flex-col items-center gap-1">
+                        <span className="text-lg">🏆</span> Sazonal (Grupo)
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button onClick={(e) => handlePvPClick(e, 'normal', 'random')} className="btn-secondary text-xs px-2 py-2 flex flex-col items-center gap-1 bg-indigo-50 hover:bg-indigo-100 border-indigo-200 text-indigo-700 dark:bg-indigo-500/20 dark:hover:bg-indigo-500/30 dark:border-indigo-500/30 dark:text-indigo-300">
+                        <span className="text-lg">🎲</span> Normal (Fila)
+                      </button>
+                      <button onClick={(e) => handlePvPClick(e, 'seasonal', 'random')} className="btn-battle text-xs px-2 py-2 flex flex-col items-center gap-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 dark:from-amber-600 dark:to-orange-600 border-none text-white shadow-md">
+                        <span className="text-lg">🔥</span> Sazonal (Fila)
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <Link to="/battle/select" id="battle-pvp-select-btn" className="btn-secondary w-full justify-center">
+                    Selecionar equipe primeiro
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         </div>
 
         {/* Select team link */}
         <div className="text-center mt-8">
-          <Link to="/battle/select" className="text-slate-400 hover:text-white transition-colors text-sm underline underline-offset-4">
+          <Link to="/battle/select" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors text-sm underline underline-offset-4">
             {hasTeam ? '🔄 Trocar equipe' : '➕ Selecionar equipe de 6 Pokémon'}
           </Link>
         </div>

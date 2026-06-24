@@ -1,18 +1,29 @@
 import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useBattle } from '../../context/BattleContext';
+import { useAuth } from '../../context/AuthContext';
+import { useSeason } from '../../context/SeasonContext';
 import { useBattleState } from '../../battle/useBattleState';
 import { hpPercent, hpBarClass } from '../../battle/battleEngine';
 import TypeBadge from '../../components/ui/TypeBadge';
 import { usePageMeta } from '../../hooks/usePageMeta';
+import { ITEMS } from '../../data/items';
+import { recordMatchSimple } from '../../lib/matchService';
 
-export default forwardRef(function BattleArena({ mode = 'cpu', enemyTeam = [], onSendAction, onSendReplace, waitingForOpponent = false }, ref) {
+const TURN_TIME = 60; // seconds
+
+export default forwardRef(function BattleArena({ mode = 'cpu', enemyTeam = [], onSendAction, onSendReplace, onMatchEnd, waitingForOpponent = false }, ref) {
   usePageMeta('Arena de Batalha', 'Lute com sua equipe na arena Pokémon!');
   const navigate = useNavigate();
   const { selectedTeam, difficulty } = useBattle();
+  const { user, profile } = useAuth();
+  const { currentSeason } = useSeason();
   const logRef = useRef(null);
+  const timerRef = useRef(null);
+  const matchRecordedRef = useRef(false);
   const [showLog, setShowLog] = useState(false);
   const [switchMenu, setSwitchMenu] = useState(false);
+  const [turnTimer, setTurnTimer] = useState(TURN_TIME);
 
   const battle = useBattleState({ mode, difficulty });
   useImperativeHandle(ref, () => battle);
@@ -29,19 +40,55 @@ export default forwardRef(function BattleArena({ mode = 'cpu', enemyTeam = [], o
     }
   }, [battle.log]);
 
-  const { playerPoke, enemyPoke, phase, log, winner, animation, PHASES } = battle;
+  const { playerPoke, enemyPoke, phase, log, winner, animation, PHASES, turnCount } = battle;
 
-  if (!playerPoke || !enemyPoke) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <p className="text-slate-400">Sua equipe ou equipe inimiga está vazia.</p>
-        <Link to="/battle/select" className="btn-primary">Selecionar equipe</Link>
-      </div>
-    );
-  }
+  // Record match result once when winner is determined
+  useEffect(() => {
+    if (!winner || winner === 'draw' || matchRecordedRef.current) return;
+    matchRecordedRef.current = true;
+    const matchType = mode === 'pvp' ? 'ranked' : 'casual';
+    if (user?.id) {
+      if (winner === 'player') {
+        recordMatchSimple(user.id, null, { matchType, turns: turnCount, seasonId: currentSeason?.id || null });
+      } else if (winner === 'enemy') {
+        recordMatchSimple(null, user.id, { matchType, turns: turnCount, seasonId: currentSeason?.id || null });
+      }
+    }
+    onMatchEnd?.({ winner, turns: turnCount });
+  }, [winner]);
+
 
   const isForceSwitch = phase === PHASES.FORCE_SWITCH;
   const showSwitchMenu = switchMenu || isForceSwitch;
+  const isPlayerTurn = phase === PHASES.PLAYER && !waitingForOpponent;
+
+  // 60-second turn timer
+  useEffect(() => {
+    if (!isPlayerTurn || showSwitchMenu) {
+      clearInterval(timerRef.current);
+      setTurnTimer(TURN_TIME);
+      return;
+    }
+    setTurnTimer(TURN_TIME);
+    timerRef.current = setInterval(() => {
+      setTurnTimer(prev => {
+        if (prev <= 1) {
+          clearInterval(timerRef.current);
+          // Auto-select first available move
+          const firstMove = battle.playerPoke?.moves?.[0];
+          if (firstMove) {
+            if (mode === 'pvp' && onSendAction) onSendAction({ type: 'attack', move: firstMove });
+            else battle.selectMove(firstMove);
+          }
+          return TURN_TIME;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timerRef.current);
+  }, [isPlayerTurn, showSwitchMenu]);
+
+  const lastMsg = log[log.length - 1]?.msg || '...';
 
   function handleSelectMove(move) {
     setSwitchMenu(false);
@@ -60,8 +107,14 @@ export default forwardRef(function BattleArena({ mode = 'cpu', enemyTeam = [], o
     }
   }
 
-  const isPlayerTurn = phase === PHASES.PLAYER && !waitingForOpponent;
-  const lastMsg = log[log.length - 1]?.msg || '...';
+  if (!playerPoke || !enemyPoke) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <p className="text-slate-400">Aguardando as equipes...</p>
+        <Link to="/battle/select" className="btn-primary">Selecionar equipe</Link>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 flex flex-col overflow-hidden bg-slate-100 select-none" style={{ fontFamily: "'Press Start 2P', monospace" }}>
@@ -93,6 +146,23 @@ export default forwardRef(function BattleArena({ mode = 'cpu', enemyTeam = [], o
           {showLog ? '■ LOG' : '▶ LOG'}
         </button>
       </div>
+
+      {/* ── Turn Timer Bar ─────────────────────────────────────────── */}
+      {isPlayerTurn && !showSwitchMenu && (
+        <div className="flex-shrink-0 h-1.5 bg-slate-200 relative overflow-hidden">
+          <div
+            className={`h-full transition-all duration-1000 ease-linear ${
+              turnTimer > 30 ? 'bg-emerald-400' : turnTimer > 10 ? 'bg-yellow-400' : 'bg-red-500 animate-pulse'
+            }`}
+            style={{ width: `${(turnTimer / TURN_TIME) * 100}%` }}
+          />
+          <span className={`absolute right-2 top-1/2 -translate-y-1/2 text-[8px] font-bold ${
+            turnTimer <= 10 ? 'text-red-600' : 'text-slate-400'
+          }`} style={{ fontFamily: "'Press Start 2P', monospace" }}>
+            {turnTimer}s
+          </span>
+        </div>
+      )}
 
       {/* ── Battle field ─────────────────────────────────────────── */}
       <div className="relative flex-1 overflow-hidden flex flex-col sm:flex-row items-center justify-center gap-4 p-4">
