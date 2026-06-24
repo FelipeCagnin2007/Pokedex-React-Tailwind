@@ -40,6 +40,9 @@ export default function BattlePvP() {
       case PVP_MSG.ACTION:
         setOpponentAction(msg.payload);
         break;
+      case PVP_MSG.REPLACE:
+        if (arenaRef.current) arenaRef.current.forceOpponentSwitch(msg.payload);
+        break;
       case PVP_MSG.FORFEIT:
         alert('Oponente desistiu da batalha!');
         break;
@@ -80,6 +83,10 @@ export default function BattlePvP() {
     peer.sendMessage({ type: PVP_MSG.ACTION, payload: action });
   }
 
+  function handleSendReplace(idx) {
+    peer.sendMessage({ type: PVP_MSG.REPLACE, payload: idx });
+  }
+
   async function copyRoomId() {
     try {
       await navigator.clipboard.writeText(peer.roomId || '');
@@ -108,6 +115,7 @@ export default function BattlePvP() {
         mode="pvp"
         enemyTeam={opponentTeam}
         onSendAction={handleSendAction}
+        onSendReplace={handleSendReplace}
         waitingForOpponent={!!myAction && !opponentAction}
       />
     );

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useBattle } from '../../context/BattleContext';
 import { useBattleState } from '../../battle/useBattleState';
@@ -6,7 +6,7 @@ import { hpPercent, hpBarClass } from '../../battle/battleEngine';
 import TypeBadge from '../../components/ui/TypeBadge';
 import { usePageMeta } from '../../hooks/usePageMeta';
 
-export default function BattleArena({ mode = 'cpu', enemyTeam = [], onSendAction, waitingForOpponent = false }) {
+export default forwardRef(function BattleArena({ mode = 'cpu', enemyTeam = [], onSendAction, onSendReplace, waitingForOpponent = false }, ref) {
   usePageMeta('Arena de Batalha', 'Lute com sua equipe na arena Pokémon!');
   const navigate = useNavigate();
   const { selectedTeam, difficulty } = useBattle();
@@ -15,6 +15,7 @@ export default function BattleArena({ mode = 'cpu', enemyTeam = [], onSendAction
   const [switchMenu, setSwitchMenu] = useState(false);
 
   const battle = useBattleState({ mode, difficulty });
+  useImperativeHandle(ref, () => battle);
 
   useEffect(() => {
     if (selectedTeam.length > 0 && enemyTeam.length > 0) {
@@ -39,6 +40,9 @@ export default function BattleArena({ mode = 'cpu', enemyTeam = [], onSendAction
     );
   }
 
+  const isForceSwitch = phase === PHASES.FORCE_SWITCH;
+  const showSwitchMenu = switchMenu || isForceSwitch;
+
   function handleSelectMove(move) {
     setSwitchMenu(false);
     if (mode === 'pvp' && onSendAction) onSendAction({ type: 'attack', move });
@@ -46,9 +50,14 @@ export default function BattleArena({ mode = 'cpu', enemyTeam = [], onSendAction
   }
 
   function handleSwitch(idx) {
-    setSwitchMenu(false);
-    if (mode === 'pvp' && onSendAction) onSendAction({ type: 'switch', index: idx });
-    else battle.switchPokemon(idx);
+    if (isForceSwitch) {
+      if (mode === 'pvp' && onSendReplace) onSendReplace(idx);
+      battle.forceSwitch(idx);
+    } else {
+      setSwitchMenu(false);
+      if (mode === 'pvp' && onSendAction) onSendAction({ type: 'switch', index: idx });
+      else battle.switchPokemon(idx);
+    }
   }
 
   const isPlayerTurn = phase === PHASES.PLAYER && !waitingForOpponent;
@@ -176,17 +185,19 @@ export default function BattleArena({ mode = 'cpu', enemyTeam = [], onSendAction
         </div>
 
         {/* Switch Pokémon panel */}
-        {switchMenu && (
+        {showSwitchMenu && (
           <div className="bg-slate-800 border-b border-slate-700 animate-slide-up">
             <div className="px-4 py-3">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-slate-400 text-[9px] uppercase tracking-widest">Trocar Pokémon</span>
-                <button
-                  onClick={() => setSwitchMenu(false)}
-                  className="text-slate-400 hover:text-white text-[9px] transition-colors"
-                >
-                  ESC / VOLTAR
-                </button>
+                {!isForceSwitch && (
+                  <button
+                    onClick={() => setSwitchMenu(false)}
+                    className="text-slate-400 hover:text-white text-[9px] transition-colors"
+                  >
+                    ESC / VOLTAR
+                  </button>
+                )}
               </div>
               <div className="grid grid-cols-5 gap-2">
                 {battle.playerTeam.map((p, i) => (
@@ -222,7 +233,7 @@ export default function BattleArena({ mode = 'cpu', enemyTeam = [], onSendAction
         )}
 
         {/* Action panel */}
-        {!switchMenu && (
+        {!showSwitchMenu && (
           <div className="flex">
             {/* Moves grid — 2x2 */}
             <div className="flex-1 grid grid-cols-2">
@@ -308,7 +319,7 @@ export default function BattleArena({ mode = 'cpu', enemyTeam = [], onSendAction
       )}
     </div>
   );
-}
+});
 
 // ─── Enemy Status Box ─────────────────────────────────────────────────────────
 function EnemyStatusBox({ pokemon, team, activeIdx }) {

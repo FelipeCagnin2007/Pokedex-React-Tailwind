@@ -14,8 +14,10 @@ function generateRoomId() {
 export const PVP_MSG = {
   READY:       'READY',
   TEAM_SYNC:   'TEAM_SYNC',
-  SELECT_MOVE: 'SELECT_MOVE',
-  SWITCH:      'SWITCH',
+  ACTION:      'ACTION',
+  REPLACE:     'REPLACE',
+  SELECT_MOVE: 'SELECT_MOVE', // legacy if needed
+  SWITCH:      'SWITCH', // legacy
   FORFEIT:     'FORFEIT',
   PING:        'PING',
   PONG:        'PONG',

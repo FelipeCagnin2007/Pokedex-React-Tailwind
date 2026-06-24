@@ -8,6 +8,8 @@ const PHASES = {
   ANIMATING:'animating',
   SWITCH:   'switch',
   GAME_OVER:'game_over',
+  FORCE_SWITCH: 'force_switch',
+  WAIT_OPPONENT_SWITCH: 'wait_opponent_switch'
 };
 
 function createLog(msg, type = 'info') {
@@ -146,14 +148,14 @@ export function useBattleState({ mode = 'cpu', difficulty = 'normal' } = {}) {
         await delay(800);
         setAnimation(null);
 
-        // Check if target fainted
+          // Check if target fainted
         if (targetPoke.currentHp <= 0) {
           addLog(`${targetPoke.name} desmaiou!`, 'faint');
           syncState();
           await delay(800);
           
-          // Auto-replace fainted Pokémon
-          if (isPlayer) {
+          // Se o Pokémon que morreu é do Player (isPlayer indica quem bateu)
+          if (!isPlayer) {
             const nextIdx = pTeam.findIndex(p => p.currentHp > 0);
             if (nextIdx === -1) {
               setWinner('enemy');
@@ -161,10 +163,8 @@ export function useBattleState({ mode = 'cpu', difficulty = 'normal' } = {}) {
               addLog('😞 Você foi derrotado...', 'system');
               return;
             }
-            pIdx = nextIdx;
-            addLog(`${pTeam[pIdx].name} entrou em batalha!`, 'system');
-            syncState();
-            await delay(800);
+            setPhase(PHASES.FORCE_SWITCH);
+            return; // Interrompe a fila para forçar escolha
           } else {
             const nextIdx = eTeam.findIndex(p => p.currentHp > 0);
             if (nextIdx === -1) {
@@ -173,6 +173,11 @@ export function useBattleState({ mode = 'cpu', difficulty = 'normal' } = {}) {
               addLog('🏆 Você venceu a batalha!', 'system');
               return;
             }
+            if (mode === 'pvp') {
+              setPhase(PHASES.WAIT_OPPONENT_SWITCH);
+              return; // Interrompe a fila e espera rede
+            }
+            // CPU substitui automaticamente
             eIdx = nextIdx;
             addLog(`${eTeam[eIdx].name} entrou em batalha!`, 'system');
             syncState();
@@ -194,6 +199,18 @@ export function useBattleState({ mode = 'cpu', difficulty = 'normal' } = {}) {
     resolveTurn({ type: 'switch', index: idx });
   };
 
+  const forceSwitch = (idx) => {
+    setPlayerIdx(idx);
+    addLog(`Vai, ${playerTeam[idx].name}!`, 'system');
+    setPhase(PHASES.PLAYER);
+  };
+
+  const forceOpponentSwitch = (idx) => {
+    setEnemyIdx(idx);
+    addLog(`Oponente enviou ${enemyTeam[idx].name}!`, 'system');
+    setPhase(PHASES.PLAYER);
+  };
+
   const resolvePvPTurn = (playerAction, enemyAction) => {
     resolveTurn(playerAction, enemyAction);
   };
@@ -208,6 +225,8 @@ export function useBattleState({ mode = 'cpu', difficulty = 'normal' } = {}) {
     initBattle,
     selectMove,
     switchPokemon,
+    forceSwitch,
+    forceOpponentSwitch,
     resolvePvPTurn,
     setEnemyTeam,
     setPhase,
