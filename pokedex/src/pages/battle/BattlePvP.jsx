@@ -432,7 +432,7 @@ export default function BattlePvP() {
         </div>
       )}
 
-      {mode === 'guest' && peer.status !== 'idle' && (
+      {role === 'guest' && peer.status !== 'idle' && (
         <div className="card p-6 mb-6 text-center">
           <span className={`text-lg font-bold ${statusInfo.color}`}>{statusInfo.text}</span>
           {peer.status === 'connected' && !iAmReady && (
