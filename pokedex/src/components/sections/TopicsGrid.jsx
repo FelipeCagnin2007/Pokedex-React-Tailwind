@@ -6,90 +6,116 @@ const TOPICS = [
     emoji: '⭐',
     title: 'Pokémon',
     desc: 'Pokémon, habilidades, tipos, naturezas e muito mais',
-    color: 'hover:border-poke-red hover:bg-poke-red/10',
-    count: '898+ Pokémon',
+    colorClass: 'hover:border-red-400 hover:bg-red-50 dark:hover:bg-red-950/30',
+    badge: '1008+ Pokémon',
+    badgeColor: 'bg-red-100 text-red-700 dark:bg-red-950/60 dark:text-red-400',
+  },
+  {
+    to: '/battle',
+    emoji: '⚔️',
+    title: 'Batalhas',
+    desc: 'PvP online com amigos ou desafie a IA. Forme sua equipe de 6 Pokémon',
+    colorClass: 'hover:border-orange-400 hover:bg-orange-50 dark:hover:bg-orange-950/30',
+    badge: 'PvP + CPU',
+    badgeColor: 'bg-orange-100 text-orange-700 dark:bg-orange-950/60 dark:text-orange-400',
+    highlight: true,
   },
   {
     to: '/items',
     emoji: '🎒',
-    title: 'Items & Berries',
+    title: 'Itens & Berries',
     desc: 'Catálogo completo de itens, frutas e equipamentos',
-    color: 'hover:border-poke-blue hover:bg-poke-blue/10',
-    count: '954 Items',
+    colorClass: 'hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/30',
+    badge: '954 itens',
+    badgeColor: 'bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-400',
   },
   {
     to: '/moves',
     emoji: '⚡',
     title: 'Moves',
-    desc: 'Golpes, categorias e alvos',
-    color: 'hover:border-poke-yellow hover:bg-poke-yellow/10',
-    count: '918 Moves',
+    desc: 'Golpes, categorias, poder e precisão',
+    colorClass: 'hover:border-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-950/30',
+    badge: '918 moves',
+    badgeColor: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-950/60 dark:text-yellow-400',
   },
   {
     to: '/locations',
     emoji: '🗺️',
-    title: 'Locations',
-    desc: 'Regiões, locais e áreas geográficas',
-    color: 'hover:border-green-500 hover:bg-green-500/10',
-    count: '8 Regions',
+    title: 'Regiões',
+    desc: 'Regiões, locais e áreas geográficas do mundo Pokémon',
+    colorClass: 'hover:border-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30',
+    badge: '8 regiões',
+    badgeColor: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400',
   },
   {
     to: '/games',
     emoji: '🎮',
     title: 'Games',
-    desc: 'Gerações, Pokédexes regionais e versões',
-    color: 'hover:border-purple-500 hover:bg-purple-500/10',
-    count: '9 Generations',
+    desc: 'Gerações, Pokédexes regionais e versões dos jogos',
+    colorClass: 'hover:border-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/30',
+    badge: '9 gerações',
+    badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-400',
   },
   {
     to: '/machines',
     emoji: '💿',
     title: 'Machines',
-    desc: 'TMs e HMs que ensinam movimentos aos Pokémon',
-    color: 'hover:border-gray-400 hover:bg-gray-400/10',
-    count: '1700+ MTs',
+    desc: 'TMs e HMs que ensinam movimentos especiais',
+    colorClass: 'hover:border-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50',
+    badge: '1700+ MTs',
+    badgeColor: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400',
   },
   {
     to: '/contests',
     emoji: '🏆',
     title: 'Contests',
-    desc: 'Concursos Pokémon e efeitos',
-    color: 'hover:border-pink-500 hover:bg-pink-500/10',
-    count: '5 Contest Types',
-  },
-  {
-    to: '/encounters',
-    emoji: '🌿',
-    title: 'Encounters',
-    desc: 'Métodos de encontro com Pokémon selvagens',
-    color: 'hover:border-green-600 hover:bg-green-600/10',
-    count: '7 Methods',
+    desc: 'Concursos Pokémon com efeitos especiais',
+    colorClass: 'hover:border-pink-400 hover:bg-pink-50 dark:hover:bg-pink-950/30',
+    badge: '5 Contest Types',
+    badgeColor: 'bg-pink-100 text-pink-700 dark:bg-pink-950/60 dark:text-pink-400',
   },
 ];
 
 export default function TopicsGrid() {
   return (
-    <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="text-center mb-12">
-        <h2 className="text-3xl sm:text-4xl font-bold text-poke-red mb-4 drop-shadow-sm">Navegar por Tópico</h2>
+        <h2 className="section-title mb-3">Navegar por Tópico</h2>
+        <p className="section-subtitle">Acesso rápido a todas as seções da Pokédex</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {TOPICS.map(({ to, emoji, title, desc, color, count }) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {TOPICS.map(({ to, emoji, title, desc, colorClass, badge, badgeColor, highlight }) => (
           <Link
             key={to}
             to={to}
-            className={`glass-panel p-6 border-b-4 border-t-0 border-l-0 border-r-0 ${color} hover:-translate-y-2 transition-all duration-300 group block rounded-2xl`}
+            className={`card card-hover p-5 border flex flex-col gap-3 group
+              ${highlight
+                ? 'border-orange-200 bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 dark:border-orange-900/50'
+                : `border-slate-200 dark:border-slate-700 ${colorClass}`
+              }
+              transition-all duration-300`}
           >
-            <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-200 drop-shadow-md">
-              {emoji}
+            <div className="flex items-start justify-between">
+              <span className="text-4xl group-hover:scale-110 transition-transform duration-200 block">
+                {emoji}
+              </span>
+              {highlight && (
+                <span className="text-[10px] font-bold uppercase tracking-wider bg-orange-500 text-white px-2 py-0.5 rounded-full">
+                  Novo
+                </span>
+              )}
             </div>
-            <h3 className="text-poke-dark font-bold text-lg mb-2 group-hover:text-poke-red transition-colors duration-200">
-              {title}
-            </h3>
-            <p className="text-poke-dark-2 text-sm leading-relaxed mb-4">{desc}</p>
-            <span className="text-xs font-mono bg-white px-3 py-1 rounded-full text-poke-gray-dark border border-poke-gray shadow-sm">
-              {count}
+            <div className="flex-1">
+              <h3 className="font-bold text-slate-900 dark:text-white text-base mb-1 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
+                {title}
+              </h3>
+              <p className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed">
+                {desc}
+              </p>
+            </div>
+            <span className={`self-start text-xs font-semibold px-2.5 py-1 rounded-full ${badgeColor}`}>
+              {badge}
             </span>
           </Link>
         ))}

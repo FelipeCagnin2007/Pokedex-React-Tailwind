@@ -2,17 +2,62 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/pokeball.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="A Pokédex Definitiva — Explore o universo completo de Pokémon com dados em tempo real da PokéAPI v2. Mais de 898 Pokémon, itens, movimentos, locais e muito mais." />
-    <meta name="keywords" content="pokédex, pokemon, pokeapi, pokémon, pokédex completa" />
-    <meta property="og:title" content="Pokédex Definitiva | PokéAPI v2" />
-    <meta property="og:description" content="Explore o universo Pokémon completo com dados da PokéAPI v2" />
-    <meta name="theme-color" content="#CC0000" />
+
+    <!-- Primary SEO -->
+    <title>Pokédex | Enciclopédia Pokémon Completa & Batalhas Online</title>
+    <meta name="description" content="A Pokédex definitiva com mais de 1008 Pokémon, dados completos de moves, itens, regiões e modo de batalhas online PvP com PeerJS. Dados em tempo real via PokéAPI v2." />
+    <meta name="keywords" content="pokédex, pokemon, pokeapi, batalha pokemon, pvp pokemon, pokemon online, pokémon stats, moves pokemon" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://pokedex.app/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type"        content="website" />
+    <meta property="og:title"       content="Pokédex | Enciclopédia Pokémon Completa & Batalhas Online" />
+    <meta property="og:description" content="Explore 1008+ Pokémon, moves, itens e batalhe online com amigos via PvP. Dados em tempo real da PokéAPI v2." />
+    <meta property="og:url"         content="https://pokedex.app/" />
+    <meta property="og:image"       content="https://pokedex.app/og-image.png" />
+    <meta property="og:image:width"  content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale"      content="pt_BR" />
+    <meta property="og:site_name"   content="Pokédex" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:title"       content="Pokédex | Enciclopédia Pokémon Completa & Batalhas Online" />
+    <meta name="twitter:description" content="Explore 1008+ Pokémon e batalhe online com amigos via PvP." />
+    <meta name="twitter:image"       content="https://pokedex.app/og-image.png" />
+
+    <!-- Theme & PWA -->
+    <meta name="theme-color" content="#F8FAFC" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0F172A"  media="(prefers-color-scheme: dark)" />
+    <link rel="icon" type="image/svg+xml" href="/pokeball.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Fonts — preconnect first -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-    <title>Pokédex Definitiva | PokéAPI v2</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Press+Start+2P&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Schema.org WebSite -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Pokédex",
+      "url": "https://pokedex.app/",
+      "description": "Enciclopédia Pokémon completa com dados de 1008+ Pokémon, moves, itens e modo de batalhas online.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://pokedex.app/pokemon?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>

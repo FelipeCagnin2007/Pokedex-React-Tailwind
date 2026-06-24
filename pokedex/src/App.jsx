@@ -1,6 +1,9 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
+import { BattleProvider } from './context/BattleContext';
+
+// Pages
 import Home from './pages/Home';
 import Contests from './pages/Contests';
 import Encounters from './pages/Encounters';
@@ -17,24 +20,39 @@ import MoveDetailView from './pages/MoveDetailView';
 import ItemDetailView from './pages/ItemDetailView';
 import RegionDetailView from './pages/RegionDetailView';
 
+// Battle pages
+import BattleLobby from './pages/battle/BattleLobby';
+import BattleSelect from './pages/battle/BattleSelect';
+import BattleCPU from './pages/battle/BattleCPU';
+import BattlePvP from './pages/battle/BattlePvP';
+
 function NotFound() {
   return (
-    <main className="min-h-[60vh] flex flex-col items-center justify-center gap-6">
-      <div className="text-8xl animate-bounce-subtle">😵</div>
-      <h1 className="font-pixel text-poke-yellow text-xl">404</h1>
-      <p className="text-poke-gray-light">Página não encontrada!</p>
-      <a href="/" className="btn-primary">Voltar para Home</a>
+    <main className="min-h-[60vh] flex flex-col items-center justify-center gap-6 px-4 text-center">
+      <div className="text-8xl animate-bounce">😵</div>
+      <h1 className="font-bold text-slate-900 dark:text-white text-3xl">404</h1>
+      <p className="text-slate-500 dark:text-slate-400">Página não encontrada!</p>
+      <a href="/" className="btn-primary">← Voltar para Home</a>
     </main>
+  );
+}
+
+function BattleLayout({ children }) {
+  return (
+    <BattleProvider>
+      {children}
+    </BattleProvider>
   );
 }
 
 export default function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen flex flex-col bg-poke-light">
+      <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
         <Navbar />
-        <div className="flex-1 bg-parallax">
+        <div className="flex-1">
           <Routes>
+            {/* Main pages */}
             <Route path="/" element={<Home />} />
             <Route path="/contests" element={<Contests />} />
             <Route path="/encounters" element={<Encounters />} />
@@ -44,15 +62,21 @@ export default function App() {
             <Route path="/machines" element={<Machines />} />
             <Route path="/moves" element={<Moves />} />
             <Route path="/pokemon" element={<Pokemon />} />
-            
-            {/* Dynamic Details Routes */}
+
+            {/* Detail pages */}
             <Route path="/pokemon/:id" element={<PokemonDetailView />} />
             <Route path="/type/:id" element={<TypeDetailView />} />
             <Route path="/ability/:id" element={<AbilityDetailView />} />
             <Route path="/move/:id" element={<MoveDetailView />} />
             <Route path="/item/:id" element={<ItemDetailView />} />
             <Route path="/region/:id" element={<RegionDetailView />} />
-            
+
+            {/* Battle pages — wrapped with BattleProvider */}
+            <Route path="/battle" element={<BattleLayout><BattleLobby /></BattleLayout>} />
+            <Route path="/battle/select" element={<BattleLayout><BattleSelect /></BattleLayout>} />
+            <Route path="/battle/cpu" element={<BattleLayout><BattleCPU /></BattleLayout>} />
+            <Route path="/battle/pvp" element={<BattleLayout><BattlePvP /></BattleLayout>} />
+
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
