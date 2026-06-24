@@ -22,7 +22,8 @@ export default function BattlePvP() {
   const [mode, setMode] = useState(null); // 'host' | 'guest'
   const [joinCode, setJoinCode] = useState('');
   const [opponentTeam, setOpponentTeam] = useState(null);
-  const [pendingMove, setPendingMove] = useState(null);
+  const [myAction, setMyAction] = useState(null);
+  const [opponentAction, setOpponentAction] = useState(null);
   const [opponentReady, setOpponentReady] = useState(false);
   const [iAmReady, setIAmReady] = useState(false);
   const [started, setStarted] = useState(false);
@@ -31,18 +32,13 @@ export default function BattlePvP() {
   const handleMessage = useCallback((msg) => {
     switch (msg.type) {
       case PVP_MSG.TEAM_SYNC:
-        // Receive opponent's team
         setOpponentTeam(msg.payload.map(p => ({ ...p })));
         break;
       case PVP_MSG.READY:
         setOpponentReady(true);
         break;
-      case PVP_MSG.SELECT_MOVE:
-        // Opponent picked a move — apply to arena
-        setPendingMove(msg.payload);
-        break;
-      case PVP_MSG.SWITCH:
-        // Opponent switched Pokémon
+      case PVP_MSG.ACTION:
+        setOpponentAction(msg.payload);
         break;
       case PVP_MSG.FORFEIT:
         alert('Oponente desistiu da batalha!');
@@ -52,11 +48,7 @@ export default function BattlePvP() {
   }, []);
 
   const handleConnect = useCallback(() => {
-    // Send our team to opponent
-    peer.sendMessage({
-      type: PVP_MSG.TEAM_SYNC,
-      payload: selectedTeam,
-    });
+    peer.sendMessage({ type: PVP_MSG.TEAM_SYNC, payload: selectedTeam });
   }, [selectedTeam]);
 
   const peer = usePeerBattle({
@@ -64,20 +56,28 @@ export default function BattlePvP() {
     onConnect: handleConnect,
   });
 
-  // When both ready → start
   useEffect(() => {
     if (iAmReady && opponentReady && opponentTeam && !started) {
       setStarted(true);
     }
   }, [iAmReady, opponentReady, opponentTeam, started]);
 
+  useEffect(() => {
+    if (myAction && opponentAction && arenaRef.current) {
+      arenaRef.current.resolvePvPTurn(myAction, opponentAction);
+      setMyAction(null);
+      setOpponentAction(null);
+    }
+  }, [myAction, opponentAction]);
+
   function handleReady() {
     peer.sendMessage({ type: PVP_MSG.READY });
     setIAmReady(true);
   }
 
-  function handleSendMove(move) {
-    peer.sendMessage({ type: PVP_MSG.SELECT_MOVE, payload: move });
+  function handleSendAction(action) {
+    setMyAction(action);
+    peer.sendMessage({ type: PVP_MSG.ACTION, payload: action });
   }
 
   async function copyRoomId() {
@@ -107,8 +107,8 @@ export default function BattlePvP() {
         ref={arenaRef}
         mode="pvp"
         enemyTeam={opponentTeam}
-        onSendMove={handleSendMove}
-        waitingForOpponent={!!pendingMove === false}
+        onSendAction={handleSendAction}
+        waitingForOpponent={!!myAction && !opponentAction}
       />
     );
   }

@@ -48,7 +48,7 @@ export function useBattleState({ mode = 'cpu', difficulty = 'normal' } = {}) {
   const delay = ms => new Promise(res => setTimeout(res, ms));
 
   // ─── Core Battle Engine (Turn Queue System) ──────────────────────────────
-  const resolveTurn = async (playerAction) => {
+  const resolveTurn = async (playerAction, providedEnemyAction = null) => {
     if (phaseRef.current !== PHASES.PLAYER) return;
     setPhase(PHASES.ANIMATING);
 
@@ -65,24 +65,34 @@ export function useBattleState({ mode = 'cpu', difficulty = 'normal' } = {}) {
       setEnemyIdx(eIdx);
     };
 
-    // 1. CPU decides its action
-    const cpuMove = cpuChooseMove(eTeam[eIdx], pTeam[pIdx], difficulty);
-    const enemyAction = cpuMove ? { type: 'attack', move: cpuMove } : { type: 'skip' };
+    // 1. CPU or PvP decides its action
+    const currentEnemy = eTeam[eIdx];
+    let enemyAction;
+    
+    if (providedEnemyAction) {
+      enemyAction = { ...providedEnemyAction, actorId: currentEnemy.id };
+    } else {
+      const cpuMove = cpuChooseMove(currentEnemy, pTeam[pIdx], difficulty);
+      enemyAction = cpuMove ? { type: 'attack', move: cpuMove, actorId: currentEnemy.id } : { type: 'skip' };
+    }
 
     // 2. Queue and sort actions (Switch > Speed)
     let actions = [];
     if (playerAction.type === 'switch') {
-      actions.push({ actor: 'player', ...playerAction });
-      actions.push({ actor: 'enemy', ...enemyAction });
+      actions.push({ actor: 'player', actorId: pTeam[pIdx].id, ...playerAction });
+      actions.push({ actor: 'enemy', actorId: currentEnemy.id, ...enemyAction });
     } else {
       const pSpeed = pTeam[pIdx].stats?.speed || 50;
       const eSpeed = eTeam[eIdx].stats?.speed || 50;
+      const pAction = { actor: 'player', actorId: pTeam[pIdx].id, ...playerAction };
+      const eAction = { actor: 'enemy', actorId: currentEnemy.id, ...enemyAction };
+      
       if (pSpeed > eSpeed || (pSpeed === eSpeed && Math.random() > 0.5)) {
-        actions.push({ actor: 'player', ...playerAction });
-        actions.push({ actor: 'enemy', ...enemyAction });
+        actions.push(pAction);
+        actions.push(eAction);
       } else {
-        actions.push({ actor: 'enemy', ...enemyAction });
-        actions.push({ actor: 'player', ...playerAction });
+        actions.push(eAction);
+        actions.push(pAction);
       }
     }
 
@@ -92,6 +102,9 @@ export function useBattleState({ mode = 'cpu', difficulty = 'normal' } = {}) {
 
       const isPlayer = act.actor === 'player';
       const actorPoke = isPlayer ? pTeam[pIdx] : eTeam[eIdx];
+      
+      // If the currently active Pokémon is not the one who queued the action, cancel it
+      if (actorPoke.id !== act.actorId) continue;
       
       // If actor died from a previous action in the queue, skip their turn!
       if (actorPoke.currentHp <= 0) continue;
@@ -181,8 +194,9 @@ export function useBattleState({ mode = 'cpu', difficulty = 'normal' } = {}) {
     resolveTurn({ type: 'switch', index: idx });
   };
 
-  // For future PvP (Placeholder)
-  const applyOpponentMove = () => {};
+  const resolvePvPTurn = (playerAction, enemyAction) => {
+    resolveTurn(playerAction, enemyAction);
+  };
 
   return {
     playerTeam, enemyTeam,
@@ -194,7 +208,7 @@ export function useBattleState({ mode = 'cpu', difficulty = 'normal' } = {}) {
     initBattle,
     selectMove,
     switchPokemon,
-    applyOpponentMove,
+    resolvePvPTurn,
     setEnemyTeam,
     setPhase,
   };

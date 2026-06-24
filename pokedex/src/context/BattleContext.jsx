@@ -10,9 +10,14 @@ function loadTeam() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
-    // Validate it's an array of battle-ready Pokémon
+    // Validate it's an array of battle-ready Pokémon and migrate old hp formats
     if (!Array.isArray(parsed)) return [];
-    return parsed.filter(p => p?.id && p?.name && typeof p.maxHp === 'number');
+    return parsed.filter(p => p?.id && p?.name).map(p => {
+      if (typeof p.maxHp !== 'number' || isNaN(p.maxHp)) {
+        return { ...p, maxHp: 130, currentHp: 130 }; // Fallback for corrupted/old stats
+      }
+      return p;
+    });
   } catch {
     return [];
   }

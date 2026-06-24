@@ -43,6 +43,11 @@ export async function fetchAPI(path) {
   return data;
 }
 
+export async function fetchAllPokemon() {
+  const data = await fetchAPI('/pokemon?limit=10000');
+  return data.results;
+}
+
 // ─── List endpoints ────────────────────────────────────────────────────────────
 
 export const fetchList = (endpoint, limit = 20, offset = 0) =>

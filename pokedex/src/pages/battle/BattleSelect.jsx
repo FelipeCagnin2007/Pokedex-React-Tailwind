@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { fetchPokemon, fetchPokemonById, fetchAPI } from '../../api/pokeapi';
+import { fetchPokemon, fetchPokemonById, fetchAPI, fetchAllPokemon } from '../../api/pokeapi';
 import { buildBattlePokemon } from '../../battle/battleEngine';
 import { useBattle } from '../../context/BattleContext';
 import Spinner from '../../components/ui/Spinner';
@@ -15,6 +15,7 @@ export default function BattleSelect() {
   const { selectedTeam, addToTeam, removeFromTeam, clearTeam, isInTeam } = useBattle();
 
   const [pokemonList, setPokemonList] = useState([]);
+  const [allPokemonIndex, setAllPokemonIndex] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [offset, setOffset] = useState(0);
@@ -26,7 +27,28 @@ export default function BattleSelect() {
 
   useEffect(() => {
     loadPokemon(0, true);
+    fetchAllPokemon().then(setAllPokemonIndex).catch(console.error);
   }, []);
+
+  // Busca indexada ultra-rápida via API
+  useEffect(() => {
+    if (search.trim().length > 0 && allPokemonIndex.length > 0) {
+      const matches = allPokemonIndex.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
+      const topMatches = matches.slice(0, 60);
+      const toFetch = topMatches.filter(m => !pokemonList.some(p => p.name === m.name));
+      
+      if (toFetch.length > 0) {
+        Promise.all(toFetch.map(m => fetchPokemonById(m.name).catch(() => null)))
+          .then(details => setPokemonList(prev => {
+            const valid = details.filter(Boolean);
+            const newMap = new Map();
+            [...prev, ...valid].forEach(d => newMap.set(d.id, d));
+            return Array.from(newMap.values()).sort((a,b) => a.id - b.id);
+          }))
+          .catch(console.error);
+      }
+    }
+  }, [search, allPokemonIndex]);
 
   async function loadPokemon(off, reset = false) {
     if (reset) setLoading(true);

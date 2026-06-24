@@ -6,7 +6,7 @@ import { hpPercent, hpBarClass } from '../../battle/battleEngine';
 import TypeBadge from '../../components/ui/TypeBadge';
 import { usePageMeta } from '../../hooks/usePageMeta';
 
-export default function BattleArena({ mode = 'cpu', enemyTeam = [], onSendMove, waitingForOpponent = false }) {
+export default function BattleArena({ mode = 'cpu', enemyTeam = [], onSendAction, waitingForOpponent = false }) {
   usePageMeta('Arena de Batalha', 'Lute com sua equipe na arena Pokémon!');
   const navigate = useNavigate();
   const { selectedTeam, difficulty } = useBattle();
@@ -41,13 +41,14 @@ export default function BattleArena({ mode = 'cpu', enemyTeam = [], onSendMove, 
 
   function handleSelectMove(move) {
     setSwitchMenu(false);
-    if (mode === 'pvp' && onSendMove) onSendMove(move);
+    if (mode === 'pvp' && onSendAction) onSendAction({ type: 'attack', move });
     else battle.selectMove(move);
   }
 
   function handleSwitch(idx) {
     setSwitchMenu(false);
-    battle.switchPokemon(idx);
+    if (mode === 'pvp' && onSendAction) onSendAction({ type: 'switch', index: idx });
+    else battle.switchPokemon(idx);
   }
 
   const isPlayerTurn = phase === PHASES.PLAYER && !waitingForOpponent;
@@ -373,9 +374,6 @@ function PlayerStatusBox({ pokemon, team, activeIdx }) {
           <span className="font-pixel text-[8px] text-slate-400">LV.50</span>
         </div>
         {/* Types */}
-        <div className="flex gap-1 mb-1.5">
-          {pokemon.types?.map(t => <TypeBadge key={t} type={t} />)}
-        </div>
         <div className="flex gap-1 mb-1.5">
           {pokemon.types?.map(t => <TypeBadge key={t} type={t} />)}
         </div>
