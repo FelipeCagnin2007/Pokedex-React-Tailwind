@@ -65,19 +65,32 @@ export function BattleProvider({ children }) {
   }
 
   const addToTeam = (pokemon) => {
-    if (selectedTeam.length >= 6) return false;
-    if (selectedTeam.find(p => p.id === pokemon.id)) return false;
-    const next = [...selectedTeam, { ...pokemon, currentHp: pokemon.maxHp }];
-    setSelectedTeam(next);
+    setSelectedTeamState(prev => {
+      if (prev.length >= 6) return prev;
+      if (prev.find(p => p.id === pokemon.id)) return prev;
+      const next = [...prev, { ...pokemon, currentHp: pokemon.maxHp }];
+      try {
+        const toStore = next.map(p => ({ ...p, currentHp: p.maxHp }));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(toStore));
+      } catch { /* silent */ }
+      return next;
+    });
     return true;
   };
 
   const removeFromTeam = (pokemonId) => {
-    setSelectedTeam(selectedTeam.filter(p => p.id !== pokemonId));
+    setSelectedTeamState(prev => {
+      const next = prev.filter(p => p.id !== pokemonId);
+      try {
+        const toStore = next.map(p => ({ ...p, currentHp: p.maxHp }));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(toStore));
+      } catch { /* silent */ }
+      return next;
+    });
   };
 
   const clearTeam = () => {
-    setSelectedTeam([]);
+    setSelectedTeamState([]);
     localStorage.removeItem(STORAGE_KEY);
   };
 
