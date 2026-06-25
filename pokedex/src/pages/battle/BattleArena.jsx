@@ -189,13 +189,13 @@ export default forwardRef(function BattleArena({ mode = 'cpu', enemyTeam = [], o
                 {/* Soft shadow under sprite */}
                 <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-20 sm:w-36 h-2 sm:h-4 bg-black/10 rounded-full blur-md" />
                 <div className="transform -scale-x-100 flex items-end justify-center h-full w-full">
-                  <div className="transform scale-[2.2] sm:scale-[3.5] origin-bottom flex items-end justify-center h-full">
+                  <div className={`transform origin-bottom flex items-end justify-center h-full ${enemyPoke.animatedSprite || enemyPoke.pixelSprite ? 'scale-[2.2] sm:scale-[3.5]' : 'scale-[1.5] sm:scale-[2]'}`}>
                     <img
                       key={`enemy-${enemyPoke.id}`}
-                      src={enemyPoke.animatedSprite || enemyPoke.sprite}
+                      src={enemyPoke.animatedSprite || enemyPoke.pixelSprite || enemyPoke.sprite}
                       alt={enemyPoke.name}
-                      className="w-auto h-auto max-w-none drop-shadow-xl animate-enter-left"
-                      style={{ imageRendering: enemyPoke.animatedSprite ? 'pixelated' : 'auto', animationFillMode: 'both' }}
+                      className={`w-auto h-auto drop-shadow-xl animate-enter-left ${enemyPoke.animatedSprite || enemyPoke.pixelSprite ? 'max-w-none' : 'max-h-[300px] sm:max-h-[400px] object-contain'}`}
+                      style={{ imageRendering: enemyPoke.animatedSprite || enemyPoke.pixelSprite ? 'pixelated' : 'auto', animationFillMode: 'both' }}
                     />
                   </div>
                 </div>
@@ -221,13 +221,13 @@ export default forwardRef(function BattleArena({ mode = 'cpu', enemyTeam = [], o
             `}>
               <div className="w-24 h-24 sm:w-48 sm:h-48 relative flex items-center justify-center">
                 <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-24 sm:w-48 h-2 sm:h-5 bg-black/10 rounded-full blur-md" />
-                <div className="transform scale-[2.2] sm:scale-[3.5] origin-bottom flex items-end justify-center h-full">
+                <div className={`transform origin-bottom flex items-end justify-center h-full ${playerPoke.animatedSpriteBack || playerPoke.pixelSpriteBack || playerPoke.animatedSprite || playerPoke.pixelSprite ? 'scale-[2.2] sm:scale-[3.5]' : '-scale-x-[1.5] scale-y-[1.5] sm:-scale-x-[2] sm:scale-y-[2]'}`}>
                   <img
                     key={`player-${playerPoke.id}`}
-                    src={playerPoke.animatedSprite || playerPoke.sprite}
+                    src={playerPoke.animatedSpriteBack || playerPoke.pixelSpriteBack || playerPoke.animatedSprite || playerPoke.pixelSprite || playerPoke.sprite}
                     alt={playerPoke.name}
-                    className="w-auto h-auto max-w-none drop-shadow-xl animate-enter-left"
-                    style={{ imageRendering: playerPoke.animatedSprite ? 'pixelated' : 'auto', animationFillMode: 'both' }}
+                    className={`w-auto h-auto drop-shadow-xl animate-enter-left ${playerPoke.animatedSpriteBack || playerPoke.pixelSpriteBack || playerPoke.animatedSprite || playerPoke.pixelSprite ? 'max-w-none' : 'max-h-[300px] sm:max-h-[400px] object-contain'}`}
+                    style={{ imageRendering: playerPoke.animatedSpriteBack || playerPoke.pixelSpriteBack || playerPoke.animatedSprite || playerPoke.pixelSprite ? 'pixelated' : 'auto', animationFillMode: 'both' }}
                   />
                 </div>
               </div>

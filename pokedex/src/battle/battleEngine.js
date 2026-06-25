@@ -189,7 +189,10 @@ export function buildBattlePokemon(apiPoke, movesData) {
     currentHp: maxHp,
     sprite:   apiPoke.sprites?.other?.['official-artwork']?.front_default
               || `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${apiPoke.id}.png`,
+    pixelSprite: apiPoke.sprites?.front_default || null,
+    pixelSpriteBack: apiPoke.sprites?.back_default || null,
     animatedSprite: apiPoke.sprites?.versions?.['generation-v']?.['black-white']?.animated?.front_default || null,
+    animatedSpriteBack: apiPoke.sprites?.versions?.['generation-v']?.['black-white']?.animated?.back_default || null,
     moves:    movesData.slice(0, 4),
   };
 }
