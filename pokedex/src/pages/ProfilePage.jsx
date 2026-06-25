@@ -6,6 +6,7 @@ import { loadTeamFromCloud } from '../lib/teamService';
 import Spinner from '../components/ui/Spinner';
 import AvatarSelectorModal from '../components/ui/AvatarSelectorModal';
 import { User, Trophy, Pencil, CloudOff } from 'lucide-react';
+import { ITEMS } from '../data/items';
 
 export default function ProfilePage() {
   usePageMeta('Meu Perfil', 'Visualize suas estatísticas e equipe salva.');
@@ -120,8 +121,8 @@ export default function ProfilePage() {
                   {poke.name}
                 </p>
                 {poke.item && (
-                  <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate w-full text-center mt-1" title={poke.item.name}>
-                    {poke.item.icon} {poke.item.name}
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate w-full text-center mt-1 flex items-center justify-center gap-1" title={poke.item.name}>
+                    {ITEMS[poke.item.id]?.icon} {poke.item.name}
                   </p>
                 )}
               </div>
