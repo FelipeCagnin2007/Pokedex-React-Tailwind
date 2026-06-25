@@ -5,6 +5,8 @@ import { AuthProvider } from './context/AuthContext';
 import { SeasonProvider } from './context/SeasonContext';
 import { BattleProvider } from './context/BattleContext';
 import { Frown } from 'lucide-react';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 // Pages
 import Home from './pages/Home';
@@ -95,6 +97,8 @@ export default function App() {
           <Footer />
         </div>
         </BrowserRouter>
+        <Analytics />
+        <SpeedInsights />
       </SeasonProvider>
     </AuthProvider>
   );
