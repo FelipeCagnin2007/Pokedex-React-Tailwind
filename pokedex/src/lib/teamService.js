@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { ITEMS } from '../data/items';
 
 /**
  * Saves the current team to the user's profile in Supabase.
@@ -39,7 +40,17 @@ export async function loadTeamFromCloud(userId) {
       .single();
       
     if (error) throw error;
-    return data?.saved_team || null;
+    
+    const team = data?.saved_team || null;
+    if (team && Array.isArray(team)) {
+      return team.map(poke => {
+        if (poke.item && poke.item.id && ITEMS[poke.item.id]) {
+          poke.item = ITEMS[poke.item.id];
+        }
+        return poke;
+      });
+    }
+    return team;
   } catch (err) {
     console.error('Failed to load team from cloud:', err);
     return null;
