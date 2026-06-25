@@ -166,7 +166,7 @@ export default function Navbar() {
           menuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'
         }`}
       >
-        <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 shadow-xl">
+        <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 shadow-xl max-h-[calc(100vh-4rem)] overflow-y-auto overscroll-contain">
           <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-1">
             {NAV_ITEMS.map(({ to, label, icon, highlight }) => (
               <NavLink
@@ -189,20 +189,17 @@ export default function Navbar() {
 
             <div className="h-px bg-slate-200 dark:bg-slate-700 my-2" />
 
-            {/* Mobile Auth & Theme Toggle inside Menu */}
-            <div className="flex items-center justify-between px-4 py-2">
+            <div className="px-4 pb-4 flex flex-col gap-2 pt-2">
               <button
                 onClick={toggle}
-                className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 flex-1 transition-colors"
+                className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-medium hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
               >
                 {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
                 <span>{isDark ? 'Modo Claro' : 'Modo Escuro'}</span>
               </button>
-            </div>
 
-            <div className="px-4 pb-4">
               {user ? (
-                <div className="flex flex-col gap-2 mt-2">
+                <>
                   <Link
                     to="/profile"
                     className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-medium hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
@@ -214,23 +211,17 @@ export default function Navbar() {
                     )}
                     Perfil de {profile?.username || 'Usuário'}
                   </Link>
-                  <Link
-                    to="/ranking"
-                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 font-medium hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-colors"
-                  >
-                    <Trophy className="w-4 h-4" /> Ranking: {profile?.mmr || 1000}
-                  </Link>
                   <button
                     onClick={signOut}
                     className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-red-600 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 font-medium transition-colors"
                   >
                     Sair da conta
                   </button>
-                </div>
+                </>
               ) : (
                 <Link
                   to="/login"
-                  className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-red-600 text-white font-medium hover:bg-red-700 transition-colors mt-2"
+                  className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-red-600 text-white font-medium hover:bg-red-700 transition-colors"
                 >
                   <LogIn className="w-5 h-5" /> Fazer Login
                 </Link>
