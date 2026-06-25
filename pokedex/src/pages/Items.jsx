@@ -4,14 +4,15 @@ import {
   fetchBerries, fetchBerry,
   formatName
 } from '../api/pokeapi';
+import { Cherry } from 'lucide-react';
 
 
 function BerryDetail({ data }) {
   return (
     <div className="bg-white border border-poke-gray p-6 rounded-lg animate-fade-in shadow-sm">
       <div className="flex items-center gap-4 mb-6 border-b border-poke-gray pb-4">
-        <div className="bg-poke-gray-light p-3 rounded-full border border-poke-gray">
-          <span className="text-3xl">🫐</span>
+        <div className="bg-poke-gray-light p-3 rounded-full border border-poke-gray text-blue-500">
+          <Cherry size={32} />
         </div>
         <div>
           <h2 className="text-poke-dark font-bold text-2xl capitalize">{formatName(data.name)} Berry</h2>
@@ -79,7 +80,6 @@ const TABS = [
   {
     id: 'items',
     label: 'Items',
-    icon: '🎒',
     fetchFn: fetchItems,
     detailFn: fetchItem,
     routePrefix: '/item',
@@ -87,7 +87,6 @@ const TABS = [
   {
     id: 'berries',
     label: 'Berries',
-    icon: '🫐',
     fetchFn: fetchBerries,
     detailFn: fetchBerry,
     renderDetail: (d) => <BerryDetail data={d} />,
@@ -98,7 +97,6 @@ export default function Items() {
   return (
     <TopicPage
       title="Items & Berries"
-      emoji="🎒"
       description="Explore the complete catalog of Pokémon items — from Poké Balls and evolutionary stones to Berries and machines."
       tabs={TABS}
     />

@@ -10,7 +10,8 @@ import Spinner from '../../components/ui/Spinner';
 import TypeBadge from '../../components/ui/TypeBadge';
 import PokemonCustomizer from '../../components/battle/PokemonCustomizer';
 import { usePageMeta } from '../../hooks/usePageMeta';
-import { ITEMS } from '../../data/items';
+import { ITEMS } from '../../data/items.jsx';
+import { Dices, Cloud, Save, Check, Trash2, AlertTriangle, ArrowLeft } from 'lucide-react';
 
 const TYPE_FILTERS = [
   'Todos', 'normal', 'fire', 'water', 'electric', 'grass', 'ice',
@@ -196,14 +197,14 @@ export default function BattleSelect() {
           <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white">Montar Equipe</h1>
           <p className="text-slate-500 dark:text-slate-400 mt-1">Selecione seus 6 Pokémon para a batalha.</p>
         </div>
-        <div className="flex gap-2 flex-wrap justify-end">
-          <Link to="/battle" className="btn-secondary whitespace-nowrap">← Voltar</Link>
-          <button onClick={() => handleGenerateRandom(false)} disabled={generating} className="btn-secondary bg-indigo-50 text-indigo-600 hover:bg-indigo-100 dark:bg-indigo-900/30 dark:text-indigo-400 dark:hover:bg-indigo-900/50 whitespace-nowrap">
-            {generating ? 'Gerando...' : '🎲 Time Aleatório'}
+        <div className="flex flex-col sm:flex-row w-full sm:w-auto gap-2">
+          <Link to="/battle" className="btn-secondary text-center w-full sm:w-auto flex items-center justify-center gap-1.5"><ArrowLeft size={16} /> Voltar</Link>
+          <button onClick={() => handleGenerateRandom(false)} disabled={generating} className="btn-secondary bg-indigo-50 text-indigo-600 hover:bg-indigo-100 dark:bg-indigo-900/30 dark:text-indigo-400 dark:hover:bg-indigo-900/50 text-center w-full sm:w-auto flex items-center justify-center gap-1.5">
+            {generating ? 'Gerando...' : <><Dices size={16} /> Time Aleatório</>}
           </button>
           {currentSeason && (
-            <button onClick={() => handleGenerateRandom(true)} disabled={generating} className="btn-battle whitespace-nowrap px-3 py-1.5 text-sm">
-              {generating ? 'Gerando...' : `${currentSeason.emoji} Time Sazonal`}
+            <button onClick={() => handleGenerateRandom(true)} disabled={generating} className="btn-battle text-center w-full sm:w-auto px-3 py-1.5 text-sm flex items-center justify-center gap-1.5">
+              {generating ? 'Gerando...' : <>{currentSeason.emoji} Time Sazonal</>}
             </button>
           )}
         </div>
@@ -237,19 +238,19 @@ export default function BattleSelect() {
           <div className="flex flex-wrap gap-2 justify-end">
             {user && (
               <>
-                <button onClick={handleLoadTeam} className="btn-ghost text-xs text-blue-500 hover:text-blue-600">
-                  ☁️ Carregar
+                <button onClick={handleLoadTeam} className="btn-ghost text-xs text-blue-500 hover:text-blue-600 flex items-center gap-1">
+                  <Cloud size={14} /> Carregar
                 </button>
                 {selectedTeam.length === 6 && (
-                  <button onClick={handleSaveTeam} disabled={cloudStatus === 'saving'} className="btn-ghost text-xs text-emerald-500 hover:text-emerald-600">
-                    {cloudStatus === 'saving' ? 'Salvando...' : cloudStatus === 'saved' ? '✅ Salvo!' : '💾 Salvar Time'}
+                  <button onClick={handleSaveTeam} disabled={cloudStatus === 'saving'} className="btn-ghost text-xs text-emerald-500 hover:text-emerald-600 flex items-center gap-1">
+                    {cloudStatus === 'saving' ? 'Salvando...' : cloudStatus === 'saved' ? <><Check size={14} /> Salvo!</> : <><Save size={14} /> Salvar Time</>}
                   </button>
                 )}
               </>
             )}
             {selectedTeam.length > 0 && (
-              <button onClick={clearTeam} className="btn-ghost text-xs text-red-500 hover:text-red-600">
-                🗑️ Limpar
+              <button onClick={clearTeam} className="btn-ghost text-xs text-red-500 hover:text-red-600 flex items-center gap-1">
+                <Trash2 size={14} /> Limpar
               </button>
             )}
           </div>
@@ -263,22 +264,22 @@ export default function BattleSelect() {
               : 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300'
           }`}>
             {seasonViolations.length === 0 ? (
-              <p className="font-bold">{currentSeason.emoji} Time válido para Batalhas Sazonais de {currentSeason.name}!</p>
+              <p className="font-bold flex items-center gap-2"><Check size={16} /> Time válido para Batalhas Sazonais de {currentSeason.name}!</p>
             ) : (
               <>
-                <p className="font-bold mb-1">⚠️ Equipe incompatível com a Temporada (permitida apenas em Batalhas Casuais):</p>
+                <p className="font-bold mb-1 flex items-center gap-2"><AlertTriangle size={16} /> Equipe incompatível com a Temporada (permitida apenas em Batalhas Casuais):</p>
                 {seasonViolations.map((v, i) => <p key={i} className="text-xs ml-4">• {v}</p>)}
               </>
             )}
           </div>
         )}
-        <div className="grid grid-cols-6 gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
           {Array.from({ length: 6 }).map((_, i) => {
             const poke = selectedTeam[i];
             return (
               <div
                 key={i}
-                className={`relative flex flex-col items-center justify-center p-2 rounded-xl border-2 transition-all min-h-[90px] ${
+                className={`relative flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all min-h-[100px] mt-2 ${
                   poke
                     ? 'border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800'
                     : 'border-dashed border-slate-200 dark:border-slate-700 bg-transparent'
@@ -286,17 +287,17 @@ export default function BattleSelect() {
               >
                 {poke ? (
                   <>
-                    <img src={poke.sprite} alt={poke.name} className="w-12 h-12 object-contain" />
-                    <p className="text-[10px] font-medium text-slate-700 dark:text-slate-300 capitalize truncate w-full text-center mt-1">
+                    <img src={poke.sprite} alt={poke.name} className="w-14 h-14 object-contain drop-shadow-md" />
+                    <p className="text-[11px] font-bold text-slate-700 dark:text-slate-300 capitalize truncate w-full text-center mt-1">
                       {poke.name}
                     </p>
                     {poke.item && (
-                      <span className="text-sm" title={ITEMS[poke.item.id]?.name}>{poke.item.icon}</span>
+                      <span className="text-sm mt-1 bg-white dark:bg-slate-700 rounded-full w-5 h-5 flex items-center justify-center shadow-sm" title={ITEMS[poke.item.id]?.name}>{poke.item.icon}</span>
                     )}
                     <button
                       onClick={() => removeFromTeam(poke.id)}
-                      className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center hover:bg-red-600 transition-colors leading-none"
-                      aria-label={`Remover ${poke.name}`}
+                      className="absolute -top-3 -right-2 w-6 h-6 bg-slate-800 dark:bg-slate-700 text-white rounded-full text-sm flex items-center justify-center hover:bg-red-600 dark:hover:bg-red-500 transition-colors leading-none shadow-md"
+                      title={`Remover ${poke.name}`}
                     >
                       ×
                     </button>
@@ -314,9 +315,9 @@ export default function BattleSelect() {
           <div className="mt-6 flex justify-center">
             <button
               onClick={() => navigate('/battle')}
-              className="btn-battle w-full sm:w-auto text-lg py-3 px-8 shadow-xl hover:scale-105 transition-transform"
+              className="btn-battle w-full sm:w-auto text-lg py-3 px-8 shadow-xl hover:scale-105 transition-transform flex items-center justify-center gap-2"
             >
-              ✅ Equipe pronta! Batalhar →
+              <Check size={20} /> Equipe pronta! Batalhar &rarr;
             </button>
           </div>
         )}

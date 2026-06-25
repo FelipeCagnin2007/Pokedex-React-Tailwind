@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { Map } from 'lucide-react';
 import { fetchRegion, formatName } from '../api/pokeapi';
 import Spinner from '../components/ui/Spinner';
 
@@ -44,7 +45,7 @@ export default function RegionDetailView() {
       <div className="glass-panel p-8 rounded-2xl animate-slide-up">
         <div className="flex flex-col sm:flex-row items-center gap-6 mb-8 border-b border-poke-gray/50 pb-6">
           <div className="bg-white/50 p-6 rounded-full border border-poke-gray/30 shadow-inner flex items-center justify-center">
-            <span className="text-6xl animate-float">🗺️</span>
+            <Map size={64} className="animate-float text-emerald-500" />
           </div>
           <div className="text-center sm:text-left">
             <h1 className="text-poke-red font-bold text-4xl sm:text-5xl capitalize mb-2 drop-shadow-sm">{formatName(data.name)} Region</h1>

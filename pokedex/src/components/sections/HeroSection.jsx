@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useSeason } from '../../context/SeasonContext';
 import { fetchAPI } from '../../api/pokeapi';
+import { Star, Swords } from 'lucide-react';
 
 const FEATURED = [
   { id: 6,   name: 'Charizard' },
@@ -147,11 +148,11 @@ export default function HeroSection() {
               className="flex flex-col sm:flex-row gap-3 animate-slide-up"
               style={{ animationDelay: '0.2s' }}
             >
-              <Link to="/pokemon" id="hero-explore-btn" className="btn-primary text-base px-6 py-3">
-                ⭐ Explorar Atlas
+              <Link to="/pokemon" id="hero-explore-btn" className="btn-primary text-base px-6 py-3 flex items-center justify-center gap-2">
+                <Star size={18} /> Explorar Atlas
               </Link>
-              <Link to="/battle" id="hero-battle-btn" className="btn-battle text-base px-6 py-3">
-                ⚔️ Iniciar Batalha
+              <Link to="/battle" id="hero-battle-btn" className="btn-battle text-base px-6 py-3 flex items-center justify-center gap-2">
+                <Swords size={18} /> Iniciar Batalha
               </Link>
             </div>
 

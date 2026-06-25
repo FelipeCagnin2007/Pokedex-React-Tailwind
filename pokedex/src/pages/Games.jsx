@@ -1,4 +1,5 @@
 import TopicPage from '../components/TopicPage';
+import { Gamepad, BookOpen } from 'lucide-react';
 import {
   fetchGenerations, fetchPokedexes, fetchVersions, fetchVersionGroups,
   fetchGeneration, fetchPokedex, fetchVersion,
@@ -125,7 +126,7 @@ const TABS = [
   {
     id: 'generations',
     label: 'Generations',
-    icon: '🕹️',
+    icon: <Gamepad size={24} />,
     fetchFn: fetchGenerations,
     detailFn: fetchGeneration,
     renderDetail: (d) => <GenerationDetail data={d} />,
@@ -133,7 +134,7 @@ const TABS = [
   {
     id: 'pokedexes',
     label: 'Pokédexes',
-    icon: '📖',
+    icon: <BookOpen size={24} />,
     fetchFn: fetchPokedexes,
     detailFn: fetchPokedex,
     renderDetail: (d) => <PokedexDetail data={d} />,
@@ -144,7 +145,6 @@ export default function Games() {
   return (
     <TopicPage
       title="Games"
-      emoji="🎮"
       description="Explore the generations of Pokémon games, regional Pokédexes, individual versions, and version groups."
       tabs={TABS}
     />

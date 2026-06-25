@@ -6,10 +6,15 @@
 import { useState, useEffect } from 'react';
 import { fetchAPI, fetchPokemonById } from '../../api/pokeapi';
 import { buildBattlePokemon } from '../../battle/battleEngine';
-import { ITEMS } from '../../data/items';
+import { ITEMS } from '../../data/items.jsx';
 import TypeBadge from '../ui/TypeBadge';
+import { Swords, Sparkles, Moon, HelpCircle, Check, Ban, X } from 'lucide-react';
 
-const MOVE_CLASS_ICON = { physical: '⚔️', special: '✨', status: '💤' };
+const MOVE_CLASS_ICON = { 
+  physical: <Swords size={14} className="text-red-500" />, 
+  special: <Sparkles size={14} className="text-amber-500" />, 
+  status: <Moon size={14} className="text-indigo-500" /> 
+};
 
 export default function PokemonCustomizer({ pokemon, onConfirm, onClose }) {
   const [fullData, setFullData] = useState(null);
@@ -132,7 +137,7 @@ export default function PokemonCustomizer({ pokemon, onConfirm, onClose }) {
                     className="flex items-center gap-1 px-2.5 py-1 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 rounded-full text-xs font-semibold hover:bg-red-100 hover:text-red-600 transition-colors group"
                   >
                     <span className="capitalize">{m.name.replace(/-/g, ' ')}</span>
-                    <span className="text-[10px] opacity-0 group-hover:opacity-100">✕</span>
+                    <X size={12} className="opacity-0 group-hover:opacity-100" />
                   </button>
                 ))}
               </div>
@@ -161,7 +166,7 @@ export default function PokemonCustomizer({ pokemon, onConfirm, onClose }) {
                           : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-blue-400 text-slate-700 dark:text-slate-300 cursor-pointer'
                         }`}
                     >
-                      <span className="text-sm">{MOVE_CLASS_ICON[move.damage_class?.name] || '❓'}</span>
+                      <span className="flex items-center justify-center w-5 h-5">{MOVE_CLASS_ICON[move.damage_class?.name] || <HelpCircle size={14} className="text-slate-400" />}</span>
                       <span className="flex-1 capitalize font-medium truncate">{move.name.replace(/-/g, ' ')}</span>
                       {move.type && (
                         <TypeBadge type={move.type.name} small />
@@ -169,7 +174,7 @@ export default function PokemonCustomizer({ pokemon, onConfirm, onClose }) {
                       {move.power && (
                         <span className="text-[10px] text-slate-400 shrink-0">{move.power}</span>
                       )}
-                      {isSelected && <span className="text-emerald-500 shrink-0">✓</span>}
+                      {isSelected && <Check size={16} className="text-emerald-500 shrink-0" />}
                     </button>
                   );
                 })}
@@ -189,7 +194,7 @@ export default function PokemonCustomizer({ pokemon, onConfirm, onClose }) {
                     : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-500 hover:border-slate-400'
                   }`}
               >
-                <span>🚫</span>
+                <Ban size={16} className="text-slate-400" />
                 <span>Sem item</span>
               </button>
               {Object.values(ITEMS).map(item => {
@@ -207,7 +212,7 @@ export default function PokemonCustomizer({ pokemon, onConfirm, onClose }) {
                   >
                     <span className="text-base">{item.icon}</span>
                     <span className="truncate">{item.name}</span>
-                    {isSelected && <span className="text-blue-500 ml-auto shrink-0">✓</span>}
+                    {isSelected && <Check size={16} className="text-blue-500 ml-auto shrink-0" />}
                   </button>
                 );
               })}
@@ -226,9 +231,9 @@ export default function PokemonCustomizer({ pokemon, onConfirm, onClose }) {
           <button
             onClick={handleConfirm}
             disabled={selectedMoves.length < 1}
-            className={`flex-2 btn-battle px-8 ${selectedMoves.length < 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`flex-2 btn-battle px-8 flex items-center justify-center gap-2 ${selectedMoves.length < 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            ✅ Adicionar ao time
+            <Check size={18} /> Adicionar ao time
           </button>
         </div>
       </div>

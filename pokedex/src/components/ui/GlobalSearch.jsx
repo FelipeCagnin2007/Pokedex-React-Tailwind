@@ -1,14 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Star, Backpack, Zap, Map } from 'lucide-react';
 
 const CACHE_KEY = 'pokeapi_search_cache';
 const CACHE_EXPIRY = 7 * 24 * 60 * 60 * 1000; // 1 week
 
 const CATEGORY_META = {
-  pokemon: { label: 'Pokémon', color: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400', emoji: '⭐' },
-  item:    { label: 'Item',    color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400', emoji: '🎒' },
-  move:    { label: 'Move',   color: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-400', emoji: '⚡' },
-  region:  { label: 'Região', color: 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400', emoji: '🗺️' },
+  pokemon: { label: 'Pokémon', color: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400', icon: <Star size={16} className="text-red-500" /> },
+  item:    { label: 'Item',    color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-400', icon: <Backpack size={16} className="text-blue-500" /> },
+  move:    { label: 'Move',   color: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-400', icon: <Zap size={16} className="text-yellow-500" /> },
+  region:  { label: 'Região', color: 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400', icon: <Map size={16} className="text-emerald-500" /> },
 };
 
 function highlight(text, query) {
@@ -39,7 +40,10 @@ export default function GlobalSearch() {
 
   useEffect(() => {
     async function loadSearchData() {
-      const cached = localStorage.getItem(CACHE_KEY);
+      // Remove legacy localStorage cache to free up quota for Supabase Auth
+      try { localStorage.removeItem(CACHE_KEY); } catch { /* ignore */ }
+
+      const cached = sessionStorage.getItem(CACHE_KEY);
       if (cached) {
         try {
           const parsed = JSON.parse(cached);
@@ -67,7 +71,7 @@ export default function GlobalSearch() {
         };
 
         try {
-          localStorage.setItem(CACHE_KEY, JSON.stringify({ timestamp: Date.now(), data: searchData }));
+          sessionStorage.setItem(CACHE_KEY, JSON.stringify({ timestamp: Date.now(), data: searchData }));
         } catch { /* quota exceeded */ }
 
         setData(searchData);
@@ -189,7 +193,7 @@ export default function GlobalSearch() {
                     `}
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <span className="text-base flex-shrink-0">{meta.emoji}</span>
+                      <span className="flex-shrink-0">{meta.icon}</span>
                       <span className="font-medium text-slate-900 dark:text-slate-100 text-sm capitalize truncate">
                         {highlight(item.name.replace(/-/g, ' '), query.replace(/-/g, ' '))}
                       </span>

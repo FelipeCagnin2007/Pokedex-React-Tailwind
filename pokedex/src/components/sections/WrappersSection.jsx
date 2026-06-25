@@ -1,8 +1,10 @@
+import { Box, Globe, Bot, Code2, Hexagon, MonitorSmartphone } from 'lucide-react';
+
 const WRAPPERS = [
   {
     name: 'Pokédex Promise v2',
     lang: 'Node.js',
-    emoji: '🟢',
+    icon: <Box size={24} className="text-green-500" />,
     desc: 'Wrapper completo com suporte a promises e cache para Node.js.',
     url: 'https://github.com/PokeAPI/pokedex-promise-v2',
     install: 'npm i pokedex-promise-v2',
@@ -10,7 +12,7 @@ const WRAPPERS = [
   {
     name: 'pokeapi-js-wrapper',
     lang: 'Browser',
-    emoji: '🌐',
+    icon: <Globe size={24} className="text-blue-500" />,
     desc: 'Wrapper JavaScript para uso direto no navegador com cache incluso.',
     url: 'https://github.com/PokeAPI/pokeapi-js-wrapper',
     install: 'npm i pokeapi-js-wrapper',
@@ -18,7 +20,7 @@ const WRAPPERS = [
   {
     name: 'Pokéapi-kotlin',
     lang: 'Kotlin / Android',
-    emoji: '🤖',
+    icon: <Bot size={24} className="text-emerald-500" />,
     desc: 'Biblioteca oficial para aplicativos Android com suporte a Coroutines.',
     url: 'https://github.com/PokeAPI/pokekotlin',
     install: 'implementation "me.sargunvohra.lib:pokekotlin:2.6.3"',
@@ -26,7 +28,7 @@ const WRAPPERS = [
   {
     name: 'pokebase',
     lang: 'Python',
-    emoji: '🐍',
+    icon: <Code2 size={24} className="text-yellow-500" />,
     desc: 'Interface Python simples para a PokéAPI com cache automático.',
     url: 'https://github.com/zaneadix/pokebase',
     install: 'pip install pokebase',
@@ -34,7 +36,7 @@ const WRAPPERS = [
   {
     name: 'PokeApi.Net',
     lang: 'C# / .NET',
-    emoji: '💜',
+    icon: <Hexagon size={24} className="text-purple-500" />,
     desc: 'Wrapper .NET com suporte completo a tipos e cache integrado.',
     url: 'https://github.com/jtwotimes/PokeApiNet',
     install: 'dotnet add package PokeApiNet',
@@ -42,7 +44,7 @@ const WRAPPERS = [
   {
     name: 'pokeapi-dart',
     lang: 'Dart / Flutter',
-    emoji: '💙',
+    icon: <MonitorSmartphone size={24} className="text-cyan-500" />,
     desc: 'Biblioteca para Flutter/Dart com suporte a todos os endpoints da v2.',
     url: 'https://github.com/prathanbomb/pokeapi-dart',
     install: 'pokeapi_dart: ^0.3.0',
@@ -61,7 +63,7 @@ export default function WrappersSection() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {WRAPPERS.map(({ name, lang, emoji, desc, url, install }) => (
+        {WRAPPERS.map(({ name, lang, icon, desc, url, install }) => (
           <a
             key={name}
             href={url}
@@ -71,7 +73,7 @@ export default function WrappersSection() {
           >
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-2">
-                <span className="text-2xl">{emoji}</span>
+                <span>{icon}</span>
                 <div>
                   <p className="text-white font-bold text-sm group-hover:text-poke-yellow transition-colors">
                     {name}

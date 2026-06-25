@@ -7,8 +7,9 @@ import { useBattleState } from '../../battle/useBattleState';
 import { hpPercent, hpBarClass } from '../../battle/battleEngine';
 import TypeBadge from '../../components/ui/TypeBadge';
 import { usePageMeta } from '../../hooks/usePageMeta';
-import { ITEMS } from '../../data/items';
+import { ITEMS } from '../../data/items.jsx';
 import { recordMatchSimple } from '../../lib/matchService';
+import { Bot, Trophy, Frown, X, RotateCcw } from 'lucide-react';
 
 const TURN_TIME = 60; // seconds
 
@@ -117,7 +118,7 @@ export default forwardRef(function BattleArena({ mode = 'cpu', enemyTeam = [], o
   }
 
   return (
-    <div className="fixed inset-0 flex flex-col overflow-hidden bg-slate-100 select-none" style={{ fontFamily: "'Press Start 2P', monospace" }}>
+    <div className="relative w-full min-h-[calc(100vh-4rem)] lg:h-[calc(100vh-4rem)] flex flex-col bg-slate-100 select-none z-40 overflow-hidden" style={{ fontFamily: "'Press Start 2P', monospace" }}>
 
       {/* ── Top HUD ──────────────────────────────────────────────── */}
       <div className="flex items-center justify-between px-4 py-2 bg-white border-b border-slate-200 shadow-sm z-20 flex-shrink-0">
@@ -125,7 +126,7 @@ export default forwardRef(function BattleArena({ mode = 'cpu', enemyTeam = [], o
           onClick={() => { if (window.confirm('Deseja sair da batalha?')) navigate('/battle'); }}
           className="text-slate-500 hover:text-red-500 text-[9px] transition-colors"
         >
-          ✕ SAIR
+          <X size={10} className="inline mr-1" /> SAIR
         </button>
         {/* Party dots */}
         <div className="flex gap-1.5">
@@ -165,82 +166,99 @@ export default forwardRef(function BattleArena({ mode = 'cpu', enemyTeam = [], o
       )}
 
       {/* ── Battle field ─────────────────────────────────────────── */}
-      <div className="relative flex-1 overflow-hidden flex flex-col sm:flex-row items-center justify-center gap-4 p-4">
+      <div className="relative w-full h-[55vh] min-h-[360px] max-h-[500px] lg:h-auto lg:flex-1 lg:max-h-none overflow-hidden mx-auto flex items-center justify-center">
+        <div className="relative w-full max-w-4xl h-full max-h-[340px] sm:max-h-[460px] lg:max-h-[540px]">
 
-        {/* ── Enemy side ─────────────────────────────────────────── */}
-        <div className="flex-1 flex flex-col items-center justify-center gap-4 w-full">
-          {/* Enemy Status Box */}
-          <EnemyStatusBox pokemon={enemyPoke} team={battle.enemyTeam} activeIdx={battle.enemyIdx} />
-          {/* Enemy sprite */}
-          <div className={`relative transition-all duration-500
-            ${animation?.target === 'enemy' && animation.type === 'hit' ? 'animate-battle-flash' : ''}
-            ${animation?.target === 'enemy' && animation.type === 'miss' ? 'opacity-40' : 'opacity-100'}
-          `}>
-            <div className="w-40 h-40 sm:w-48 sm:h-48 relative">
-              {/* Soft shadow under sprite */}
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-28 h-4 bg-black/10 rounded-full blur-md" />
-              <img
-                key={`enemy-${enemyPoke.id}`}
-                src={enemyPoke.animatedSprite || enemyPoke.sprite}
-                alt={enemyPoke.name}
-                className="w-full h-full object-contain drop-shadow-xl animate-enter-right"
-                style={{ imageRendering: enemyPoke.animatedSprite ? 'pixelated' : 'auto', animationFillMode: 'both' }}
-              />
+          {/* Background Pokeball Watermark */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 sm:w-[400px] sm:h-[400px] text-slate-200 opacity-50 pointer-events-none z-0">
+            <svg viewBox="0 0 100 100" className="w-full h-full">
+              <circle cx="50" cy="50" r="47" fill="none" stroke="currentColor" strokeWidth="4" />
+              <path d="M 3 50 A 47 47 0 0 1 97 50 Z" fill="currentColor" opacity="0.2" />
+              <line x1="3" y1="50" x2="97" y2="50" stroke="currentColor" strokeWidth="4" />
+              <circle cx="50" cy="50" r="14" fill="none" stroke="currentColor" strokeWidth="4" />
+            </svg>
+          </div>
+
+          {/* Enemy Sprite - Top Left */}
+          <div className="absolute top-20 sm:top-16 lg:top-16 left-4 sm:left-24 z-0">
+            <div className={`relative transition-all duration-500
+              ${animation?.target === 'enemy' && animation.type === 'hit' ? 'animate-battle-flash' : ''}
+              ${animation?.target === 'enemy' && animation.type === 'miss' ? 'opacity-40' : 'opacity-100'}
+            `}>
+              <div className="w-24 h-24 sm:w-48 sm:h-48 relative flex items-center justify-center">
+                {/* Soft shadow under sprite */}
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-20 sm:w-36 h-2 sm:h-4 bg-black/10 rounded-full blur-md" />
+                <div className="transform -scale-x-100 flex items-end justify-center h-full w-full">
+                  <div className="transform scale-[2.2] sm:scale-[3.5] origin-bottom flex items-end justify-center h-full">
+                    <img
+                      key={`enemy-${enemyPoke.id}`}
+                      src={enemyPoke.animatedSprite || enemyPoke.sprite}
+                      alt={enemyPoke.name}
+                      className="w-auto h-auto max-w-none drop-shadow-xl animate-enter-left"
+                      style={{ imageRendering: enemyPoke.animatedSprite ? 'pixelated' : 'auto', animationFillMode: 'both' }}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
+
+          {/* Enemy Status - Top Right */}
+          <div className="absolute top-0 sm:top-4 right-2 sm:right-8 z-10 w-[55%] sm:w-auto min-w-[140px] transform scale-[0.85] sm:scale-100 origin-top-right">
+            <EnemyStatusBox pokemon={enemyPoke} team={battle.enemyTeam} activeIdx={battle.enemyIdx} />
+          </div>
+
+          {/* Player Status - Bottom Left */}
+          <div className="absolute bottom-0 sm:bottom-4 left-2 sm:left-8 z-10 w-[55%] sm:w-auto min-w-[140px] transform scale-[0.85] sm:scale-100 origin-bottom-left">
+            <PlayerStatusBox pokemon={playerPoke} team={battle.playerTeam} activeIdx={battle.playerIdx} />
+          </div>
+
+          {/* Player Sprite - Bottom Right */}
+          <div className="absolute bottom-4 sm:bottom-8 right-4 sm:right-24 z-0">
+            <div className={`relative transition-all duration-500
+              ${animation?.target === 'player' && animation.type === 'hit' ? 'animate-battle-flash' : ''}
+              ${animation?.target === 'player' && animation.type === 'miss' ? 'opacity-40' : 'opacity-100'}
+            `}>
+              <div className="w-24 h-24 sm:w-48 sm:h-48 relative flex items-center justify-center">
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-24 sm:w-48 h-2 sm:h-5 bg-black/10 rounded-full blur-md" />
+                <div className="transform scale-[2.2] sm:scale-[3.5] origin-bottom flex items-end justify-center h-full">
+                  <img
+                    key={`player-${playerPoke.id}`}
+                    src={playerPoke.animatedSprite || playerPoke.sprite}
+                    alt={playerPoke.name}
+                    className="w-auto h-auto max-w-none drop-shadow-xl animate-enter-left"
+                    style={{ imageRendering: playerPoke.animatedSprite ? 'pixelated' : 'auto', animationFillMode: 'both' }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* CPU thinking indicator */}
+          {phase === PHASES.CPU && (
+            <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+              <div className="bg-white border border-slate-200 shadow-lg rounded-2xl px-6 py-3 text-center animate-fade-in flex items-center gap-1.5">
+                <Bot size={14} className="text-slate-500" />
+                <p className="text-slate-700 text-[10px]">CPU pensando...</p>
+              </div>
+            </div>
+          )}
+
+          {/* Log overlay */}
+          {showLog && (
+            <div className="absolute inset-2 sm:top-2 sm:right-2 sm:bottom-2 sm:w-64 sm:left-auto z-20 flex flex-col">
+              <div
+                ref={logRef}
+                className="flex-1 bg-white/95 border border-slate-200 shadow-xl rounded-xl p-3 overflow-y-auto no-scrollbar flex flex-col gap-1"
+              >
+                {log.map(entry => (
+                  <LogLine key={entry.id} entry={entry} />
+                ))}
+              </div>
+            </div>
+          )}
+
         </div>
-
-        {/* Divider / VS */}
-        <div className="hidden sm:flex flex-col items-center gap-2">
-          <div className="w-px h-24 bg-slate-200" />
-          <span className="font-pixel text-[10px] text-slate-300">VS</span>
-          <div className="w-px h-24 bg-slate-200" />
-        </div>
-
-        {/* ── Player side ────────────────────────────────────────── */}
-        <div className="flex-1 flex flex-col items-center justify-center gap-4 w-full">
-          {/* Player sprite */}
-          <div className={`relative transition-all duration-500
-            ${animation?.target === 'player' && animation.type === 'hit' ? 'animate-battle-flash' : ''}
-            ${animation?.target === 'player' && animation.type === 'miss' ? 'opacity-40' : 'opacity-100'}
-          `}>
-            <div className="w-40 h-40 sm:w-48 sm:h-48 relative">
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-28 h-4 bg-black/10 rounded-full blur-md" />
-              <img
-                key={`player-${playerPoke.id}`}
-                src={playerPoke.animatedSprite || playerPoke.sprite}
-                alt={playerPoke.name}
-                className="w-full h-full object-contain drop-shadow-xl animate-enter-left"
-                style={{ imageRendering: playerPoke.animatedSprite ? 'pixelated' : 'auto', animationFillMode: 'both' }}
-              />
-            </div>
-          </div>
-          {/* Player Status Box */}
-          <PlayerStatusBox pokemon={playerPoke} team={battle.playerTeam} activeIdx={battle.playerIdx} />
-        </div>
-
-        {/* CPU thinking indicator */}
-        {phase === PHASES.CPU && (
-          <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-            <div className="bg-white border border-slate-200 shadow-lg rounded-2xl px-6 py-3 text-center animate-fade-in">
-              <p className="text-slate-700 text-[10px]">🤖 CPU pensando...</p>
-            </div>
-          </div>
-        )}
-
-        {/* Log overlay */}
-        {showLog && (
-          <div className="absolute top-2 right-2 bottom-2 w-56 z-20 flex flex-col">
-            <div
-              ref={logRef}
-              className="flex-1 bg-white/95 border border-slate-200 shadow-xl rounded-xl p-3 overflow-y-auto no-scrollbar flex flex-col gap-1"
-            >
-              {log.map(entry => (
-                <LogLine key={entry.id} entry={entry} />
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
       {/* ── Bottom panel ─────────────────────────────────────────── */}
@@ -269,7 +287,7 @@ export default forwardRef(function BattleArena({ mode = 'cpu', enemyTeam = [], o
                   </button>
                 )}
               </div>
-              <div className="grid grid-cols-5 gap-2">
+              <div className="grid grid-cols-3 gap-2">
                 {battle.playerTeam.map((p, i) => (
                   p.id !== playerPoke.id ? (
                     <button
@@ -322,7 +340,7 @@ export default forwardRef(function BattleArena({ mode = 'cpu', enemyTeam = [], o
             </div>
 
             {/* Side actions */}
-            <div className="flex flex-col w-36 border-l-2 border-slate-200">
+            <div className="flex flex-col w-16 sm:w-36 border-l-2 border-slate-200">
               <SideAction
                 label="POKÉMON"
                 icon={
@@ -359,8 +377,8 @@ export default forwardRef(function BattleArena({ mode = 'cpu', enemyTeam = [], o
       {winner && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 animate-fade-in">
           <div className="text-center animate-bounce-in px-8">
-            <div className="text-7xl mb-6 animate-float">
-              {winner === 'player' ? '🏆' : '😞'}
+            <div className="mb-6 flex justify-center animate-float">
+              {winner === 'player' ? <Trophy size={64} className="text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.5)]" /> : <Frown size={64} className="text-blue-400 drop-shadow-[0_0_15px_rgba(96,165,250,0.5)]" />}
             </div>
             <h2
               className="text-3xl text-white mb-3 animate-slide-up"
@@ -378,7 +396,7 @@ export default forwardRef(function BattleArena({ mode = 'cpu', enemyTeam = [], o
                 onClick={() => battle.initBattle(selectedTeam, battle.enemyTeam.map(p => ({ ...p, currentHp: p.maxHp })))}
                 className="btn-battle px-10 py-3 text-[11px]"
               >
-                🔄 REVANCHE
+                <RotateCcw size={12} className="inline mr-1" /> REVANCHE
               </button>
               <Link to="/battle" className="btn-secondary px-8 py-2.5 text-[10px]">
                 ← LOBBY
@@ -397,7 +415,7 @@ function EnemyStatusBox({ pokemon, team, activeIdx }) {
   const bar = hpBarClass(pct);
 
   return (
-    <div className="w-full max-w-xs bg-white border border-slate-200 rounded-2xl shadow-md overflow-hidden animate-slide-in-left">
+    <div className="w-full max-w-xs bg-white border border-slate-200 rounded-2xl shadow-md overflow-hidden animate-slide-in-left flex-shrink-0">
       <div className="px-3 pt-2.5 pb-1">
         {/* Name row */}
         <div className="flex items-center justify-between mb-1">
@@ -445,7 +463,7 @@ function PlayerStatusBox({ pokemon, team, activeIdx }) {
   const bar = hpBarClass(pct);
 
   return (
-    <div className="w-full max-w-xs bg-white border border-slate-200 rounded-2xl shadow-md overflow-hidden animate-slide-in-right">
+    <div className="w-full max-w-xs bg-white border border-slate-200 rounded-2xl shadow-md overflow-hidden animate-slide-in-right flex-shrink-0">
       <div className="px-3 pt-2.5 pb-1">
         {/* Name */}
         <div className="flex items-center justify-between mb-1">
@@ -564,7 +582,7 @@ function SideAction({ label, icon, active, accent, bg, onClick }) {
       <span className={`transition-transform duration-150 ${active ? 'group-hover:scale-110' : ''}`}>
         {icon}
       </span>
-      {label}
+      <span className="hidden sm:block mt-1">{label}</span>
     </button>
   );
 }

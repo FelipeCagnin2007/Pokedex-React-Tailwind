@@ -64,6 +64,23 @@ export function AuthProvider({ children }) {
     }
   }
 
+  async function updateAvatar(url) {
+    if (!user || !profile) return false;
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ avatar_url: url })
+        .eq('id', user.id);
+      
+      if (error) throw error;
+      setProfile({ ...profile, avatar_url: url });
+      return true;
+    } catch (err) {
+      console.error('Error updating avatar:', err);
+      return false;
+    }
+  }
+
   const signIn = (email, password) => supabase.auth.signInWithPassword({ email, password });
   const signUp = (email, password, username) => supabase.auth.signUp({ 
     email, 
@@ -73,7 +90,7 @@ export function AuthProvider({ children }) {
   const signOut = () => supabase.auth.signOut();
 
   return (
-    <AuthContext.Provider value={{ user, profile, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, profile, loading, signIn, signUp, signOut, updateAvatar }}>
       {children}
     </AuthContext.Provider>
   );

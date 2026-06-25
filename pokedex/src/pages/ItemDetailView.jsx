@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchItem, formatName, getEnglishText } from '../api/pokeapi';
 import Spinner from '../components/ui/Spinner';
+import { Backpack } from 'lucide-react';
 
 export default function ItemDetailView() {
   const { id } = useParams();
@@ -50,7 +51,7 @@ export default function ItemDetailView() {
             {data.sprites?.default ? (
               <img src={data.sprites.default} alt={data.name} className="w-24 h-24 object-contain animate-float" />
             ) : (
-              <span className="text-6xl">🎒</span>
+              <Backpack size={64} className="text-slate-400 drop-shadow-md" />
             )}
           </div>
           <div className="text-center sm:text-left">

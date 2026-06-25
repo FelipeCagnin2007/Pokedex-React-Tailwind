@@ -95,7 +95,7 @@ export default function Footer() {
 
         <div className="border-t border-slate-200 dark:border-slate-700 mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-slate-400 dark:text-slate-500 text-xs">
-            © {new Date().getFullYear()} The Pokemon Atlas. Feito com ❤️ e dados da PokéAPI v2.
+            © {new Date().getFullYear()} The Pokemon Atlas. Desenvolvido por Cagnin Software Development.
           </p>
           <div className="flex items-center gap-4">
             <span className="text-slate-300 dark:text-slate-600 text-xs">

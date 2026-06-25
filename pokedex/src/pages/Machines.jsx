@@ -1,5 +1,6 @@
 import TopicPage from '../components/TopicPage';
 import { fetchMachines, fetchMachine, formatName } from '../api/pokeapi';
+import { Disc } from 'lucide-react';
 
 function MachineDetail({ data }) {
   return (
@@ -25,7 +26,7 @@ const TABS = [
   {
     id: 'machines',
     label: 'Machines (TMs/HMs)',
-    icon: '💿',
+    icon: <Disc size={24} />,
     fetchFn: fetchMachines,
     detailFn: fetchMachine,
     accentColor: 'red',
@@ -37,7 +38,6 @@ export default function Machines() {
   return (
     <TopicPage
       title="Machines"
-      emoji="💿"
       description="Machines (TMs e HMs) são itens que ensinam movimentos específicos aos Pokémon. Explore quais movimentos cada MT/MO ensina em cada geração."
       tabs={TABS}
     />

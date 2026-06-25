@@ -150,20 +150,21 @@ export default function PokemonDetailView() {
     const isCurrent = speciesName === data.name || speciesName === species?.name;
     
     return (
-      <div key={speciesName} className="flex flex-col items-center">
-        <div className="text-center w-24">
+      <div key={speciesName} className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+        <div className="text-center w-28 bg-white dark:bg-slate-800 p-3 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm transition-all hover:shadow-md hover:-translate-y-1">
           <Link to={`/pokemon/${speciesName}`}>
-            <img src={getSpriteUrl(chain.species.url.split('/').at(-2))} alt={speciesName} className="w-16 h-16 mx-auto mb-1 hover:scale-110 transition-transform" />
-            <p className={`text-xs uppercase font-bold ${isCurrent ? 'text-poke-red' : 'text-poke-blue hover:underline cursor-pointer'}`}>
+            <img src={getSpriteUrl(chain.species.url.split('/').at(-2))} alt={speciesName} className="w-20 h-20 mx-auto mb-2 object-contain" />
+            <p className={`text-[11px] uppercase tracking-wider font-extrabold ${isCurrent ? 'text-red-600 dark:text-red-400' : 'text-slate-700 dark:text-slate-300 hover:text-blue-500 cursor-pointer transition-colors'}`}>
               {formatName(speciesName)}
             </p>
           </Link>
         </div>
         {chain.evolves_to?.length > 0 && (
-          <div className="flex items-center gap-4 mt-2 border-t border-poke-gray pt-4 relative">
+          <div className="flex flex-col gap-4">
             {chain.evolves_to.map(child => (
-              <div key={child.species.name} className="flex items-center">
-                <div className="mx-2 text-poke-gray-dark text-xs font-bold">&rarr;</div>
+              <div key={child.species.name} className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+                <div className="text-slate-400 dark:text-slate-500 font-bold hidden sm:block">&rarr;</div>
+                <div className="text-slate-400 dark:text-slate-500 font-bold sm:hidden">&darr;</div>
                 {renderEvolutionChain(child)}
               </div>
             ))}

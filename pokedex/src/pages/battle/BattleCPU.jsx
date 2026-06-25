@@ -6,6 +6,7 @@ import { generateRandomTeam } from '../../battle/teamGenerator';
 import BattleArena from './BattleArena';
 import Spinner from '../../components/ui/Spinner';
 import { usePageMeta } from '../../hooks/usePageMeta';
+import { Gamepad2, Swords, Bot, AlertTriangle } from 'lucide-react';
 
 const DIFFICULTIES = [
   { id: 'easy',   label: 'Fácil',   desc: 'Moves aleatórios. Bom para aprender.', color: 'border-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400' },
@@ -44,7 +45,7 @@ export default function BattleCPU() {
   if (selectedTeam.length < 6) {
     return (
       <main className="max-w-xl mx-auto px-4 py-20 text-center">
-        <div className="text-6xl mb-6">⚠️</div>
+        <div className="mb-6 flex justify-center text-yellow-500"><AlertTriangle size={64} /></div>
         <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">Equipe incompleta</h1>
         <p className="text-slate-500 dark:text-slate-400 mb-8">
           Você precisa selecionar 6 Pokémon antes de batalhar.
@@ -79,7 +80,7 @@ export default function BattleCPU() {
                   : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 bg-white dark:bg-slate-800'
               }`}
             >
-              🎮 Normal
+              <Gamepad2 size={18} /> Normal
             </button>
             <button
               onClick={() => setMode('seasonal')}
@@ -131,14 +132,14 @@ export default function BattleCPU() {
 
       {/* Start */}
       {cpuTeam.length === 6 ? (
-        <button onClick={() => setStarted(true)} className="btn-battle w-full text-lg py-4">
-          ⚔️ Começar batalha!
+        <button onClick={() => setStarted(true)} className="btn-battle w-full text-lg py-4 flex items-center justify-center gap-2">
+          <Swords size={20} /> Começar batalha!
         </button>
       ) : loading ? (
         <Spinner text="Gerando equipe do CPU..." />
       ) : (
-        <button onClick={generateCPUTeam} className="btn-primary w-full text-base py-3">
-          🤖 Gerar equipe do CPU e batalhar
+        <button onClick={generateCPUTeam} className="btn-primary w-full text-base py-3 flex items-center justify-center gap-2">
+          <Bot size={18} /> Gerar equipe do CPU e batalhar
         </button>
       )}
     </main>

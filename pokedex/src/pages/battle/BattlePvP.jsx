@@ -5,14 +5,15 @@ import { usePeerBattle, PVP_MSG } from '../../battle/usePeerBattle';
 import BattleArena from './BattleArena';
 import TypeBadge from '../../components/ui/TypeBadge';
 import { usePageMeta } from '../../hooks/usePageMeta';
-import { ITEMS } from '../../data/items';
+import { ITEMS } from '../../data/items.jsx';
+import { Trophy, AlertTriangle, WifiOff, Swords, Shield, Globe, Home, Link as LinkIcon, Check, Lightbulb } from 'lucide-react';
 
 const STATUS_LABELS = {
   idle:         { text: 'Pronto para conectar', color: 'text-slate-400' },
   creating:     { text: 'Criando sala...', color: 'text-yellow-400' },
   waiting:      { text: '⏳ Aguardando oponente...', color: 'text-yellow-400' },
   connecting:   { text: 'Conectando...', color: 'text-blue-400' },
-  connected:    { text: '✅ Conectado!', color: 'text-emerald-400' },
+  connected:    { text: 'Conectado!', color: 'text-emerald-400' },
   error:        { text: 'Erro na conexão', color: 'text-red-400' },
   disconnected: { text: 'Desconectado', color: 'text-slate-500' },
 };
@@ -177,7 +178,7 @@ export default function BattlePvP() {
   if (selectedTeam.length < 6) {
     return (
       <main className="max-w-xl mx-auto px-4 py-20 text-center">
-        <div className="text-6xl mb-6">⚠️</div>
+        <div className="mb-6 flex justify-center text-yellow-500"><AlertTriangle size={64} /></div>
         <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">Equipe incompleta</h1>
         <p className="text-slate-500 dark:text-slate-400 mb-8">
           Você precisa selecionar 6 Pokémon antes de batalhar.
@@ -194,7 +195,7 @@ export default function BattlePvP() {
         <div className="card p-10 text-center max-w-md w-full mx-4 animate-bounce-in">
           {woWin ? (
             <>
-              <div className="text-6xl mb-4">🏆</div>
+              <div className="mb-4 flex justify-center text-amber-500"><Trophy size={64} /></div>
               <h2 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: "'Press Start 2P', monospace" }}>
                 W.O.!
               </h2>
@@ -207,7 +208,7 @@ export default function BattlePvP() {
             </>
           ) : (
             <>
-              <div className="text-6xl mb-4">📡</div>
+              <div className="mb-4 flex justify-center text-blue-500"><WifiOff size={64} /></div>
               <h2 className="text-xl font-bold text-white mb-2" style={{ fontFamily: "'Press Start 2P', monospace" }}>
                 Oponente desconectou
               </h2>
@@ -246,7 +247,7 @@ export default function BattlePvP() {
         <div className="grid grid-cols-2 gap-6 w-full max-w-2xl">
           {/* My team */}
           <div className="card p-4">
-            <h3 className="text-sm font-bold text-emerald-400 mb-3">⚔️ Seu Time</h3>
+            <h3 className="text-sm font-bold text-emerald-400 mb-3 flex items-center gap-1.5"><Swords size={16} /> Seu Time</h3>
             <div className="space-y-2">
               {selectedTeam.map((p) => (
                 <div key={p.id} className="flex items-center gap-2">
@@ -265,7 +266,7 @@ export default function BattlePvP() {
 
           {/* Opponent team */}
           <div className="card p-4">
-            <h3 className="text-sm font-bold text-red-400 mb-3">🛡️ Oponente</h3>
+            <h3 className="text-sm font-bold text-red-400 mb-3 flex items-center gap-1.5"><Shield size={16} /> Oponente</h3>
             <div className="space-y-2">
               {opponentTeam.map((p) => (
                 <div key={p.id} className="flex items-center gap-2">
@@ -318,8 +319,8 @@ export default function BattlePvP() {
     <main className="max-w-2xl mx-auto px-4 py-12">
       <Link to="/battle" className="btn-ghost mb-6 inline-flex">← Voltar ao Lobby</Link>
 
-      <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white mb-2">
-        {pvpMode === 'seasonal' ? '🏆 Batalha Sazonal' : '⚔️ Batalha PvP'} {pvpMatch === 'random' ? 'Aleatória' : 'com Amigo'}
+      <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+        {pvpMode === 'seasonal' ? <><Trophy size={32} className="text-amber-500" /> Batalha Sazonal</> : <><Swords size={32} className="text-red-500" /> Batalha PvP</>} {pvpMatch === 'random' ? 'Aleatória' : 'com Amigo'}
       </h1>
       <p className="text-slate-500 dark:text-slate-400 mb-8">
         {pvpMatch === 'random' 
@@ -330,7 +331,7 @@ export default function BattlePvP() {
       {/* Random Matchmaking UI */}
       {role === 'random' && (
         <div className="card p-10 text-center flex flex-col items-center">
-          <div className="text-6xl mb-6 animate-pulse">🌍</div>
+          <div className="mb-6 flex justify-center text-blue-500 animate-pulse"><Globe size={64} /></div>
           <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
             Procurando Oponente...
           </h2>
@@ -350,7 +351,7 @@ export default function BattlePvP() {
             onClick={() => { setRole('host'); peer.createRoom(); }}
             className="card p-6 text-center hover:border-red-400 transition-all hover:-translate-y-1 cursor-pointer"
           >
-            <div className="text-4xl mb-3">🏠</div>
+            <div className="mb-3 flex justify-center text-red-500"><Home size={40} /></div>
             <h3 className="font-bold text-slate-900 dark:text-white mb-1">Criar Sala</h3>
             <p className="text-slate-500 dark:text-slate-400 text-xs">Gere um código e compartilhe com seu amigo</p>
           </button>
@@ -358,7 +359,7 @@ export default function BattlePvP() {
             onClick={() => setRole('guest')}
             className="card p-6 text-center hover:border-blue-400 transition-all hover:-translate-y-1 cursor-pointer"
           >
-            <div className="text-4xl mb-3">🔗</div>
+            <div className="mb-3 flex justify-center text-blue-500"><LinkIcon size={40} /></div>
             <h3 className="font-bold text-slate-900 dark:text-white mb-1">Entrar em Sala</h3>
             <p className="text-slate-500 dark:text-slate-400 text-xs">Digite o código da sala do seu amigo</p>
           </button>
@@ -395,8 +396,8 @@ export default function BattlePvP() {
           )}
 
           {peer.status === 'connected' && !iAmReady && (
-            <button onClick={handleReady} className="btn-battle w-full">
-              ✅ Estou pronto!
+            <button onClick={handleReady} className="btn-battle w-full flex items-center justify-center gap-2">
+              <Check size={18} /> Estou pronto!
             </button>
           )}
           {iAmReady && !opponentReady && (
@@ -436,8 +437,8 @@ export default function BattlePvP() {
         <div className="card p-6 mb-6 text-center">
           <span className={`text-lg font-bold ${statusInfo.color}`}>{statusInfo.text}</span>
           {peer.status === 'connected' && !iAmReady && (
-            <button onClick={handleReady} className="btn-battle w-full mt-4">
-              ✅ Estou pronto!
+            <button onClick={handleReady} className="btn-battle w-full mt-4 flex items-center justify-center gap-2">
+              <Check size={18} /> Estou pronto!
             </button>
           )}
           {iAmReady && !opponentReady && (
@@ -451,7 +452,7 @@ export default function BattlePvP() {
 
       {/* Instructions */}
       <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-xl p-4 text-sm">
-        <p className="font-semibold text-blue-700 dark:text-blue-400 mb-1">💡 Como funciona</p>
+        <p className="font-semibold text-blue-700 dark:text-blue-400 mb-1 flex items-center gap-1.5"><Lightbulb size={16} /> Como funciona</p>
         <ol className="text-blue-600 dark:text-blue-300 text-xs space-y-1 list-decimal list-inside">
           <li>Um jogador cria a sala e recebe um código de 6 caracteres</li>
           <li>O outro jogador digita o código e entra na sala</li>

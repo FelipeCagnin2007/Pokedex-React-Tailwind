@@ -4,6 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import { usePageMeta } from '../hooks/usePageMeta';
 import { loadTeamFromCloud } from '../lib/teamService';
 import Spinner from '../components/ui/Spinner';
+import AvatarSelectorModal from '../components/ui/AvatarSelectorModal';
+import { User, Trophy, Pencil, CloudOff } from 'lucide-react';
 
 export default function ProfilePage() {
   usePageMeta('Meu Perfil', 'Visualize suas estatísticas e equipe salva.');
@@ -12,6 +14,14 @@ export default function ProfilePage() {
   
   const [team, setTeam] = useState(null);
   const [loadingTeam, setLoadingTeam] = useState(true);
+  const [isAvatarModalOpen, setAvatarModalOpen] = useState(false);
+
+  const { updateAvatar } = useAuth();
+
+  const handleAvatarSelect = async (url) => {
+    const success = await updateAvatar(url);
+    if (!success) alert('Erro ao atualizar avatar. Verifique se a coluna avatar_url existe no banco.');
+  };
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -42,19 +52,31 @@ export default function ProfilePage() {
       <div className="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col md:flex-row items-center md:items-start gap-6 border border-slate-100 dark:border-slate-700 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-red-500 to-orange-500 opacity-20 dark:opacity-10 pointer-events-none"></div>
         
-        <div className="relative z-10 w-24 h-24 sm:w-32 sm:h-32 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center text-4xl sm:text-5xl shadow-inner border-4 border-white dark:border-slate-800 flex-shrink-0">
-          👤
-        </div>
+        <button 
+          onClick={() => setAvatarModalOpen(true)}
+          className="relative z-10 w-24 h-24 sm:w-32 sm:h-32 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center text-slate-400 dark:text-slate-500 shadow-inner border-4 border-white dark:border-slate-800 flex-shrink-0 group overflow-hidden transition-transform hover:scale-105"
+          title="Alterar Avatar"
+        >
+          {profile.avatar_url ? (
+            <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-contain p-2 drop-shadow-md" />
+          ) : (
+            <User size={48} className="group-hover:opacity-50 transition-opacity" />
+          )}
+          {/* Overlay on hover */}
+          <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <Pencil className="text-white drop-shadow-md" size={24} />
+          </div>
+        </button>
         
         <div className="relative z-10 flex-1 min-w-0 text-center md:text-left">
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white capitalize font-pixel tracking-wide truncate max-w-full" title={profile.username}>
+          <h1 className="text-xl sm:text-3xl font-extrabold text-slate-900 dark:text-white capitalize tracking-wide truncate max-w-full" title={profile.username}>
             {profile.username}
           </h1>
           <p className="text-slate-500 dark:text-slate-400 mt-1 truncate">{user.email}</p>
           
           <div className="mt-4 flex flex-wrap items-center justify-center md:justify-start gap-3">
             <div className="px-4 py-2 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800/30 flex items-center gap-2">
-              <span className="text-xl">🏆</span>
+              <Trophy size={20} className="text-amber-500" />
               <div>
                 <p className="text-[10px] text-amber-600 dark:text-amber-400 font-bold uppercase tracking-wider">Pontos MMR</p>
                 <p className="text-lg font-black text-amber-700 dark:text-amber-500 leading-none">{profile.mmr}</p>
@@ -82,8 +104,8 @@ export default function ProfilePage() {
             <h2 className="text-xl font-bold text-slate-900 dark:text-white">Minha Equipe (Nuvem)</h2>
             <p className="text-sm text-slate-500 dark:text-slate-400">Esta é a equipe salva no seu perfil. Use o menu de batalha para alterá-la.</p>
           </div>
-          <Link to="/battle/select" className="btn-secondary text-sm whitespace-nowrap">
-            Editar Equipe ✏️
+          <Link to="/battle/select" className="btn-secondary text-sm whitespace-nowrap flex items-center gap-1.5">
+            <Pencil size={14} /> Editar Equipe
           </Link>
         </div>
 
@@ -106,8 +128,8 @@ export default function ProfilePage() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-10 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700">
-            <p className="text-4xl mb-3">🚷</p>
+          <div className="text-center py-10 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700 flex flex-col items-center">
+            <CloudOff size={40} className="mb-3 text-slate-400" />
             <p className="text-slate-600 dark:text-slate-400 font-medium">Nenhuma equipe salva na nuvem.</p>
             <p className="text-sm text-slate-500 dark:text-slate-500 mb-4">Monte sua equipe e clique em "Salvar Time".</p>
             <Link to="/battle/select" className="btn-primary text-sm inline-block">
@@ -116,6 +138,12 @@ export default function ProfilePage() {
           </div>
         )}
       </div>
+
+      <AvatarSelectorModal
+        isOpen={isAvatarModalOpen}
+        onClose={() => setAvatarModalOpen(false)}
+        onSelect={handleAvatarSelect}
+      />
     </main>
   );
 }

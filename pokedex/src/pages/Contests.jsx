@@ -62,7 +62,6 @@ const TABS = [
   {
     id: 'types',
     label: 'Contest Types',
-    icon: '🏆',
     fetchFn: fetchContestTypes,
     detailFn: fetchContestType,
     accentColor: 'red',
@@ -71,7 +70,6 @@ const TABS = [
   {
     id: 'effects',
     label: 'Contest Effects',
-    icon: '✨',
     fetchFn: fetchContestEffects,
     detailFn: fetchContestEffect,
     accentColor: 'yellow',
@@ -80,7 +78,6 @@ const TABS = [
   {
     id: 'super',
     label: 'Super Contest Effects',
-    icon: '🌟',
     fetchFn: fetchSuperContestEffects,
     detailFn: fetchSuperContestEffect,
     accentColor: 'blue',
@@ -91,7 +88,6 @@ export default function Contests() {
   return (
     <TopicPage
       title="Contests"
-      emoji="🏆"
       description="Os Pokémon Contests são competições em que os Pokémon exibem seus atributos. Explore os tipos de concurso, efeitos e super concursos."
       tabs={TABS}
     />

@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { getCurrentSeason, validateTeamForSeason, applySeasonalModifier } from '../data/seasons';
+import { getCurrentSeason, validateTeamForSeason, applySeasonalModifier } from '../data/seasons.jsx';
 
 const SeasonContext = createContext(null);
 

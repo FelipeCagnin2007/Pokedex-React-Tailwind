@@ -2,16 +2,17 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
-import { usePageMeta } from '../hooks/usePageMeta';
 import Spinner from '../components/ui/Spinner';
+import { usePageMeta } from '../hooks/usePageMeta';
+import { Trophy, Crown, Gem, Medal, AlertTriangle } from 'lucide-react';
 
 const TIER_COLORS = {
-  0: { label: 'Mestre',    color: 'text-yellow-500', bg: 'bg-yellow-50 dark:bg-yellow-900/20', icon: '👑', minMmr: 1800 },
-  1: { label: 'Diamante',  color: 'text-cyan-500',   bg: 'bg-cyan-50 dark:bg-cyan-900/20',     icon: '💎', minMmr: 1600 },
-  2: { label: 'Platina',   color: 'text-slate-400',  bg: 'bg-slate-50 dark:bg-slate-800',      icon: '🏅', minMmr: 1400 },
-  3: { label: 'Ouro',      color: 'text-amber-500',  bg: 'bg-amber-50 dark:bg-amber-900/20',   icon: '🥇', minMmr: 1200 },
-  4: { label: 'Prata',     color: 'text-slate-300',  bg: 'bg-slate-50 dark:bg-slate-800',      icon: '🥈', minMmr: 1000 },
-  default: { label: 'Bronze', color: 'text-amber-700', bg: 'bg-orange-50 dark:bg-orange-900/20', icon: '🥉', minMmr: 0 },
+  0: { label: 'Mestre',    color: 'text-yellow-500', bg: 'bg-yellow-50 dark:bg-yellow-900/20', icon: <Crown size={16} />, minMmr: 1800 },
+  1: { label: 'Diamante',  color: 'text-cyan-500',   bg: 'bg-cyan-50 dark:bg-cyan-900/20',     icon: <Gem size={16} />, minMmr: 1600 },
+  2: { label: 'Platina',   color: 'text-slate-400',  bg: 'bg-slate-50 dark:bg-slate-800',      icon: <Medal size={16} />, minMmr: 1400 },
+  3: { label: 'Ouro',      color: 'text-amber-500',  bg: 'bg-amber-50 dark:bg-amber-900/20',   icon: <Medal size={16} />, minMmr: 1200 },
+  4: { label: 'Prata',     color: 'text-slate-300',  bg: 'bg-slate-50 dark:bg-slate-800',      icon: <Medal size={16} />, minMmr: 1000 },
+  default: { label: 'Bronze', color: 'text-amber-700', bg: 'bg-orange-50 dark:bg-orange-900/20', icon: <Medal size={16} />, minMmr: 0 },
 };
 
 function getTier(mmr) {
@@ -35,7 +36,7 @@ export default function RankingPage() {
       try {
         const { data, error } = await supabase
           .from('profiles')
-          .select('id, username, mmr, wins, losses')
+          .select('id, username, mmr, wins, losses, avatar_url')
           .order('mmr', { ascending: false })
           .limit(100);
         if (error) throw error;
@@ -64,7 +65,7 @@ export default function RankingPage() {
     <main className="max-w-3xl mx-auto px-4 py-10">
       <div className="flex items-center justify-between mb-8 flex-wrap gap-3">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">🏆 Ranking Global</h1>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-2"><Trophy size={28} className="text-amber-500" /> Ranking Global</h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Top 100 treinadores por MMR</p>
         </div>
         <div className="flex gap-2">
@@ -88,8 +89,8 @@ export default function RankingPage() {
 
       {loading && <Spinner text="Carregando ranking..." />}
       {error && (
-        <div className="card p-6 text-center text-red-500">
-          <p className="text-2xl mb-2">⚠️</p>
+        <div className="card p-6 text-center text-red-500 flex flex-col items-center">
+          <AlertTriangle size={32} className="mb-2" />
           <p className="text-sm">{error}</p>
           <p className="text-xs text-slate-400 mt-2">Configure o Supabase para ver o ranking ao vivo.</p>
         </div>
@@ -116,17 +117,20 @@ export default function RankingPage() {
                     className={`transition-colors ${isMe ? 'bg-red-50 dark:bg-red-900/10' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'}`}
                   >
                     <td className="px-4 py-3 font-bold text-slate-500 dark:text-slate-400 w-12">
-                      {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx + 1}`}
+                      {idx === 0 ? <Medal size={20} className="text-yellow-500" /> : idx === 1 ? <Medal size={20} className="text-slate-300" /> : idx === 2 ? <Medal size={20} className="text-amber-700" /> : `#${idx + 1}`}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        <span className={`text-lg ${tier.color}`}>{tier.icon}</span>
-                        <div>
+                        {player.avatar_url && (
+                          <img src={player.avatar_url} alt="Avatar" className="w-8 h-8 object-contain drop-shadow-sm flex-shrink-0" />
+                        )}
+                        <span className={`text-lg flex-shrink-0 ${tier.color}`}>{tier.icon}</span>
+                        <div className="min-w-0">
                           <span className={`font-semibold ${isMe ? 'text-red-600 dark:text-red-400' : 'text-slate-900 dark:text-white'}`}>
                             {player.username}
                           </span>
                           {isMe && <span className="ml-2 text-[10px] text-red-500 font-bold">VOCÊ</span>}
-                          <div className={`text-[10px] font-semibold ${tier.color}`}>{tier.label}</div>
+                          <div className={`text-[10px] font-semibold truncate ${tier.color}`}>{tier.label}</div>
                         </div>
                       </div>
                     </td>
@@ -143,7 +147,10 @@ export default function RankingPage() {
               {players.length === 0 && (
                 <tr>
                   <td colSpan="4" className="px-4 py-12 text-center text-slate-400 text-sm">
-                    Nenhum treinador no ranking ainda. Seja o primeiro! 🏆
+                    <div className="flex flex-col items-center gap-2">
+                      <Trophy size={24} className="text-amber-500 opacity-50" />
+                      <span>Nenhum treinador no ranking ainda. Seja o primeiro!</span>
+                    </div>
                   </td>
                 </tr>
               )}

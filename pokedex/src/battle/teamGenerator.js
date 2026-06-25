@@ -1,6 +1,6 @@
 import { fetchPokemonById, fetchAPI } from '../api/pokeapi';
 import { buildBattlePokemon } from './battleEngine';
-import { ITEMS } from '../data/items';
+import { ITEMS } from '../data/items.jsx';
 
 /**
  * Generates a random team of 6 Pokémon with moves and items.

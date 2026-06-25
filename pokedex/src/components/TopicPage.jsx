@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import ResourceCard from '../components/ui/ResourceCard';
 import Pagination from '../components/ui/Pagination';
 import Spinner from '../components/ui/Spinner';
+import { Search } from 'lucide-react';
 
 const LIMIT = 50; // Increased limit for better tabular view like wikis
 
@@ -133,8 +134,8 @@ export default function TopicPage({ title, description, tabs }) {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="flex-1 bg-white dark:bg-slate-800 border border-poke-gray dark:border-slate-700 py-1.5 px-3 text-sm focus:outline-none focus:border-poke-blue dark:focus:border-blue-500 dark:text-white transition-colors"
               />
-              <button type="submit" className="bg-poke-gray-light dark:bg-slate-700 border border-l-0 border-poke-gray dark:border-slate-700 px-3 text-poke-dark dark:text-slate-300 hover:bg-poke-gray dark:hover:bg-slate-600 transition-colors">
-                🔍
+              <button type="submit" className="bg-poke-gray-light dark:bg-slate-700 border border-l-0 border-poke-gray dark:border-slate-700 px-3 text-poke-dark dark:text-slate-300 hover:bg-poke-gray dark:hover:bg-slate-600 transition-colors flex items-center justify-center">
+                <Search size={16} />
               </button>
             </form>
           </div>
@@ -185,7 +186,7 @@ export default function TopicPage({ title, description, tabs }) {
                 {displayResults.length === 0 ? (
                   <p className="text-center text-poke-dark-2 dark:text-slate-400 py-12 border border-poke-gray dark:border-slate-700 bg-poke-gray-light dark:bg-slate-800/50">Nenhum resultado.</p>
                 ) : (
-                  <div className="glass-panel rounded-xl overflow-hidden">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
                     {displayResults.map((item) => (
                       <ResourceCard
                         key={item.url || item.name}
@@ -193,6 +194,8 @@ export default function TopicPage({ title, description, tabs }) {
                         onClick={(tab.detailFn || tab.routePrefix) ? handleItemClick : undefined}
                         icon={tab.icon}
                         isPokemon={tab.id === 'pokemon'}
+                        isItem={tab.id === 'items'}
+                        isBerry={tab.id === 'berries'}
                       />
                     ))}
                   </div>

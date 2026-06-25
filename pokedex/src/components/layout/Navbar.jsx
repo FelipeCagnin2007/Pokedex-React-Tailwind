@@ -4,14 +4,32 @@ import GlobalSearch from '../ui/GlobalSearch';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
 
+import {
+  CircleDot,
+  Zap,
+  Backpack,
+  Map as MapIcon,
+  Gamepad2,
+  Trophy,
+  Swords,
+  Users,
+  Sun,
+  Moon,
+  User,
+  LogIn,
+  Menu,
+  X
+} from 'lucide-react';
+
 const NAV_ITEMS = [
-  { to: '/pokemon',   label: 'Pokémon',  icon: '🔴' },
-  { to: '/moves',     label: 'Moves',    icon: '⚡' },
-  { to: '/items',     label: 'Itens',    icon: '🎒' },
-  { to: '/locations', label: 'Regiões',  icon: '🗺️' },
-  { to: '/games',     label: 'Games',    icon: '🎮' },
-  { to: '/ranking',   label: 'Ranking',  icon: '🏆' },
-  { to: '/battle',    label: 'Batalha',  icon: '⚔️', highlight: true },
+  { to: '/pokemon',   label: 'Pokémon',  icon: <CircleDot className="w-5 h-5" /> },
+  { to: '/moves',     label: 'Moves',    icon: <Zap className="w-5 h-5" /> },
+  { to: '/items',     label: 'Itens',    icon: <Backpack className="w-5 h-5" /> },
+  { to: '/locations', label: 'Regiões',  icon: <MapIcon className="w-5 h-5" /> },
+  { to: '/games',     label: 'Games',    icon: <Gamepad2 className="w-5 h-5" /> },
+  { to: '/ranking',   label: 'Ranking',  icon: <Trophy className="w-5 h-5" /> },
+  { to: '/battle/select', label: 'Equipe', icon: <Users className="w-5 h-5" /> },
+  { to: '/battle',    label: 'Batalha',  icon: <Swords className="w-5 h-5" />, highlight: true },
 ];
 
 export default function Navbar() {
@@ -81,54 +99,44 @@ export default function Navbar() {
             </div>
 
             {/* Search — flex-1 */}
-            <div className="flex-1 min-w-[200px] max-w-xs sm:max-w-sm lg:max-w-md mx-2 lg:mx-3">
+            <div className="flex-1 min-w-[150px] max-w-xs sm:max-w-sm lg:max-w-md mx-2 lg:mx-3">
               <GlobalSearch />
             </div>
 
-            {/* Dark mode toggle */}
-            <button
-              onClick={toggle}
-              aria-label={isDark ? 'Ativar tema claro' : 'Ativar tema escuro'}
-              className="p-2 rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 flex-shrink-0"
-            >
-              {isDark ? (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 7a5 5 0 110 10A5 5 0 0112 7z" />
-                </svg>
-              ) : (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                </svg>
-              )}
-            </button>
-
-            {/* Auth button */}
-            {user ? (
-              <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-                <Link
-                  to="/ranking"
-                  title="Ranking"
-                  className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 text-xs font-bold hover:bg-amber-100 transition-colors"
-                >
-                  🏆 {profile?.mmr || 1000}
-                </Link>
-                <Link
-                  to="/profile"
-                  title={`Perfil de ${profile?.username || user.email}`}
-                  className="p-2 rounded-lg text-slate-500 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all flex-shrink-0 text-xs flex items-center gap-1"
-                >
-                  <span className="text-base">👤</span>
-                  <span className="hidden sm:inline">{profile?.username || 'Perfil'}</span>
-                </Link>
-              </div>
-            ) : (
-              <Link
-                to="/login"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-600 text-white text-xs font-bold hover:bg-red-700 transition-colors flex-shrink-0"
+            {/* Desktop Auth & Theme */}
+            <div className="hidden lg:flex items-center gap-2 xl:gap-4 flex-shrink-0">
+              <button
+                onClick={toggle}
+                aria-label={isDark ? 'Ativar tema claro' : 'Ativar tema escuro'}
+                className="p-2 rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200"
               >
-                🔑 <span className="hidden sm:inline">Login</span>
-              </Link>
-            )}
+                {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              </button>
+
+              {user ? (
+                <div className="flex items-center ml-1">
+                  <Link
+                    to="/profile"
+                    title={`Perfil de ${profile?.username || user.email}`}
+                    className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:border-red-400 dark:hover:border-red-500 transition-all flex items-center justify-center overflow-hidden flex-shrink-0"
+                  >
+                    {profile?.avatar_url ? (
+                      <img src={profile.avatar_url} alt="Avatar" className="w-7 h-7 object-contain drop-shadow-sm" />
+                    ) : (
+                      <User className="w-5 h-5 text-slate-400" />
+                    )}
+                  </Link>
+                </div>
+              ) : (
+                <Link
+                  to="/login"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-600 text-white text-xs font-bold hover:bg-red-700 transition-colors"
+                >
+                  <LogIn className="w-4 h-4" /> <span>Login</span>
+                </Link>
+              )}
+            </div>
+
             {/* Mobile menu button */}
             <button
               id="mobile-menu-btn"
@@ -137,12 +145,7 @@ export default function Navbar() {
               aria-label="Abrir menu"
               aria-expanded={menuOpen}
             >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                {menuOpen
-                  ? <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  : <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                }
-              </svg>
+              {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </nav>
@@ -179,10 +182,60 @@ export default function Navbar() {
                   }`
                 }
               >
-                <span className="text-lg">{icon}</span>
+                {icon}
                 {label}
               </NavLink>
             ))}
+
+            <div className="h-px bg-slate-200 dark:bg-slate-700 my-2" />
+
+            {/* Mobile Auth & Theme Toggle inside Menu */}
+            <div className="flex items-center justify-between px-4 py-2">
+              <button
+                onClick={toggle}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 flex-1 transition-colors"
+              >
+                {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                <span>{isDark ? 'Modo Claro' : 'Modo Escuro'}</span>
+              </button>
+            </div>
+
+            <div className="px-4 pb-4">
+              {user ? (
+                <div className="flex flex-col gap-2 mt-2">
+                  <Link
+                    to="/profile"
+                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-medium hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                  >
+                    {profile?.avatar_url ? (
+                      <img src={profile.avatar_url} alt="Avatar" className="w-5 h-5 object-contain" />
+                    ) : (
+                      <User className="w-4 h-4" />
+                    )}
+                    Perfil de {profile?.username || 'Usuário'}
+                  </Link>
+                  <Link
+                    to="/ranking"
+                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 font-medium hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-colors"
+                  >
+                    <Trophy className="w-4 h-4" /> Ranking: {profile?.mmr || 1000}
+                  </Link>
+                  <button
+                    onClick={signOut}
+                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-red-600 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 font-medium transition-colors"
+                  >
+                    Sair da conta
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  to="/login"
+                  className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-red-600 text-white font-medium hover:bg-red-700 transition-colors mt-2"
+                >
+                  <LogIn className="w-5 h-5" /> Fazer Login
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       </div>

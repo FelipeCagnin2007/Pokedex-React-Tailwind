@@ -1,4 +1,5 @@
 import TopicPage from '../components/TopicPage';
+import { Zap } from 'lucide-react';
 import {
   fetchMoves, fetchMoveAilments, fetchMoveCategories,
   fetchMoveDamageClasses, fetchMoveLearnMethods, fetchMoveTargets,
@@ -39,14 +40,13 @@ function MoveDetail({ data }) {
 }
 
 const TABS = [
-  { id: 'moves', label: 'Moves', icon: '⚡', fetchFn: fetchMoves, detailFn: fetchMove, accentColor: 'red', renderDetail: (d) => <MoveDetail data={d} />, routePrefix: '/move' },
+  { id: 'moves', label: 'Moves', icon: <Zap size={24} />, fetchFn: fetchMoves, detailFn: fetchMove, accentColor: 'red', renderDetail: (d) => <MoveDetail data={d} />, routePrefix: '/move' },
 ];
 
 export default function Moves() {
   return (
     <TopicPage
       title="Moves"
-      emoji="⚡"
       description="Explore mais de 918 movimentos do universo Pokémon. Veja poder, precisão, PP, tipo, categoria de dano e muito mais para cada golpe."
       tabs={TABS}
     />

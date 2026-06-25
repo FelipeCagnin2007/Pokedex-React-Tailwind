@@ -72,7 +72,7 @@ export function useBattleState({ mode = 'cpu', difficulty = 'normal' } = {}) {
     setPlayerIdx(0);
     setEnemyIdx(0);
     setTurnCount(0);
-    setLog([createLog('🏟️ Batalha iniciada! Escolha um move!', 'system')]);
+    setLog([createLog('Batalha iniciada! Escolha um move!', 'system')]);
     setWinner(null);
     setAnimation(null);
     setPhase(PHASES.PLAYER);
@@ -103,10 +103,10 @@ export function useBattleState({ mode = 'cpu', difficulty = 'normal' } = {}) {
     if (newTurnCount >= 100) {
       const playerAlive = pTeam.filter(p => p.currentHp > 0).length;
       const enemyAlive  = eTeam.filter(p => p.currentHp > 0).length;
-      addLog('⏰ Turno 100 atingido! Fim de jogo por limite de turnos!', 'system');
-      if (playerAlive > enemyAlive)     { setWinner('player'); addLog('🏆 Você venceu por ter mais Pokémon vivos!', 'system'); }
-      else if (enemyAlive > playerAlive){ setWinner('enemy');  addLog('😞 Derrota por ter menos Pokémon vivos...', 'system'); }
-      else                              { setWinner('draw');   addLog('🤝 Empate!', 'system'); }
+      addLog('Turno 100 atingido! Fim de jogo por limite de turnos!', 'system');
+      if (playerAlive > enemyAlive)     { setWinner('player'); addLog('Você venceu por ter mais Pokémon vivos!', 'system'); }
+      else if (enemyAlive > playerAlive){ setWinner('enemy');  addLog('Derrota por ter menos Pokémon vivos...', 'system'); }
+      else                              { setWinner('draw');   addLog('Empate!', 'system'); }
       setPhase(PHASES.GAME_OVER);
       return;
     }
@@ -175,7 +175,7 @@ export function useBattleState({ mode = 'cpu', difficulty = 'normal' } = {}) {
         if (!hit) {
           addLog(`${actorPoke.name} usou ${move.name} — mas errou!`, 'miss');
         } else {
-          const critText = critical ? ' 💥 Golpe crítico!' : '';
+          const critText = critical ? ' Golpe crítico!' : '';
           addLog(`${actorPoke.name} usou ${move.name}!${critText}`, isPlayer ? 'player' : 'enemy');
           if (effLabel) addLog(effLabel.text, 'effect');
 
@@ -206,11 +206,11 @@ export function useBattleState({ mode = 'cpu', difficulty = 'normal' } = {}) {
           await delay(600);
           if (isPlayer) {
             const next = pTeam.findIndex(p => p.currentHp > 0);
-            if (next === -1) { setWinner('enemy'); setPhase(PHASES.GAME_OVER); addLog('😞 Você foi derrotado...', 'system'); return; }
+            if (next === -1) { setWinner('enemy'); setPhase(PHASES.GAME_OVER); addLog('Você foi derrotado...', 'system'); return; }
             setPhase(PHASES.FORCE_SWITCH); return;
           } else {
             const next = eTeam.findIndex(p => p.currentHp > 0);
-            if (next === -1) { setWinner('player'); setPhase(PHASES.GAME_OVER); addLog('🏆 Você venceu a batalha!', 'system'); return; }
+            if (next === -1) { setWinner('player'); setPhase(PHASES.GAME_OVER); addLog('Você venceu a batalha!', 'system'); return; }
             eIdx = next; addLog(`${eTeam[eIdx].name} entrou em batalha!`, 'system'); syncState(); await delay(800);
           }
         }
@@ -222,11 +222,11 @@ export function useBattleState({ mode = 'cpu', difficulty = 'normal' } = {}) {
           await delay(800);
           if (!isPlayer) {
             const next = pTeam.findIndex(p => p.currentHp > 0);
-            if (next === -1) { setWinner('enemy'); setPhase(PHASES.GAME_OVER); addLog('😞 Você foi derrotado...', 'system'); return; }
+            if (next === -1) { setWinner('enemy'); setPhase(PHASES.GAME_OVER); addLog('Você foi derrotado...', 'system'); return; }
             setPhase(PHASES.FORCE_SWITCH); return;
           } else {
             const next = eTeam.findIndex(p => p.currentHp > 0);
-            if (next === -1) { setWinner('player'); setPhase(PHASES.GAME_OVER); addLog('🏆 Você venceu a batalha!', 'system'); return; }
+            if (next === -1) { setWinner('player'); setPhase(PHASES.GAME_OVER); addLog('Você venceu a batalha!', 'system'); return; }
             if (mode === 'pvp') { setPhase(PHASES.WAIT_OPPONENT_SWITCH); return; }
             eIdx = next; addLog(`${eTeam[eIdx].name} entrou em batalha!`, 'system'); syncState(); await delay(800);
           }

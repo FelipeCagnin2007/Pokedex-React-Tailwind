@@ -1,4 +1,5 @@
 import TopicPage from '../components/TopicPage';
+import { Map } from 'lucide-react';
 import {
   fetchLocations, fetchLocationAreas, fetchPalParkAreas, fetchRegions,
   fetchLocation, fetchRegion,
@@ -55,14 +56,13 @@ function RegionDetail({ data }) {
 }
 
 const TABS = [
-  { id: 'regions', label: 'Regions', icon: '🗺️', fetchFn: fetchRegions, detailFn: fetchRegion, routePrefix: '/region' },
+  { id: 'regions', label: 'Regions', icon: <Map size={24} />, fetchFn: fetchRegions, detailFn: fetchRegion, routePrefix: '/region' },
 ];
 
 export default function Locations() {
   return (
     <TopicPage
       title="Locations"
-      emoji="🗺️"
       description="Explore the regions of the Pokémon world — Kanto, Johto, Hoenn, Sinnoh, Unova, Kalos, Alola, and Galar — and their respective locations."
       tabs={TABS}
     />

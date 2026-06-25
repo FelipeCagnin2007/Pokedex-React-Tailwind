@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { ITEMS } from '../data/items.jsx';
 
 const BattleContext = createContext(null);
 
@@ -15,6 +16,10 @@ function loadTeam() {
     return parsed.filter(p => p?.id && p?.name).map(p => {
       if (typeof p.maxHp !== 'number' || isNaN(p.maxHp)) {
         return { ...p, maxHp: 130, currentHp: 130 }; // Fallback for corrupted/old stats
+      }
+      // Restore valid React Element for the item icon to prevent "Objects are not valid as a React child" error
+      if (p.item && p.item.id && ITEMS[p.item.id]) {
+        p.item = ITEMS[p.item.id];
       }
       return p;
     });

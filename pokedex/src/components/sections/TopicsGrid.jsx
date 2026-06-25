@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom';
+import { Star, Swords, Backpack, Zap, Map, Gamepad2, Disc, Trophy } from 'lucide-react';
 
 const TOPICS = [
   {
     to: '/pokemon',
-    emoji: '⭐',
+    icon: <Star size={36} className="text-red-500" />,
     title: 'Pokémon',
     desc: 'Pokémon, habilidades, tipos, naturezas e muito mais',
     colorClass: 'hover:border-red-400 hover:bg-red-50 dark:hover:bg-red-950/30',
@@ -12,7 +13,7 @@ const TOPICS = [
   },
   {
     to: '/battle',
-    emoji: '⚔️',
+    icon: <Swords size={36} className="text-orange-500" />,
     title: 'Batalhas',
     desc: 'PvP online com amigos ou desafie a IA. Forme sua equipe de 6 Pokémon',
     colorClass: 'hover:border-orange-400 hover:bg-orange-50 dark:hover:bg-orange-950/30',
@@ -22,7 +23,7 @@ const TOPICS = [
   },
   {
     to: '/items',
-    emoji: '🎒',
+    icon: <Backpack size={36} className="text-blue-500" />,
     title: 'Itens & Berries',
     desc: 'Catálogo completo de itens, frutas e equipamentos',
     colorClass: 'hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/30',
@@ -31,7 +32,7 @@ const TOPICS = [
   },
   {
     to: '/moves',
-    emoji: '⚡',
+    icon: <Zap size={36} className="text-yellow-500" />,
     title: 'Moves',
     desc: 'Golpes, categorias, poder e precisão',
     colorClass: 'hover:border-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-950/30',
@@ -40,7 +41,7 @@ const TOPICS = [
   },
   {
     to: '/locations',
-    emoji: '🗺️',
+    icon: <Map size={36} className="text-emerald-500" />,
     title: 'Regiões',
     desc: 'Regiões, locais e áreas geográficas do mundo Pokémon',
     colorClass: 'hover:border-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30',
@@ -49,7 +50,7 @@ const TOPICS = [
   },
   {
     to: '/games',
-    emoji: '🎮',
+    icon: <Gamepad2 size={36} className="text-purple-500" />,
     title: 'Games',
     desc: 'Gerações, Pokédexes regionais e versões dos jogos',
     colorClass: 'hover:border-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/30',
@@ -58,7 +59,7 @@ const TOPICS = [
   },
   {
     to: '/machines',
-    emoji: '💿',
+    icon: <Disc size={36} className="text-slate-500" />,
     title: 'Machines',
     desc: 'TMs e HMs que ensinam movimentos especiais',
     colorClass: 'hover:border-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50',
@@ -67,7 +68,7 @@ const TOPICS = [
   },
   {
     to: '/contests',
-    emoji: '🏆',
+    icon: <Trophy size={36} className="text-pink-500" />,
     title: 'Contests',
     desc: 'Concursos Pokémon com efeitos especiais',
     colorClass: 'hover:border-pink-400 hover:bg-pink-50 dark:hover:bg-pink-950/30',
@@ -85,7 +86,7 @@ export default function TopicsGrid() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {TOPICS.map(({ to, emoji, title, desc, colorClass, badge, badgeColor, highlight }) => (
+        {TOPICS.map(({ to, icon, title, desc, colorClass, badge, badgeColor, highlight }) => (
           <Link
             key={to}
             to={to}
@@ -97,8 +98,8 @@ export default function TopicsGrid() {
               transition-all duration-300`}
           >
             <div className="flex items-start justify-between">
-              <span className="text-4xl group-hover:scale-110 transition-transform duration-200 block">
-                {emoji}
+              <span className="group-hover:scale-110 transition-transform duration-200 block">
+                {icon}
               </span>
               {highlight && (
                 <span className="text-[10px] font-bold uppercase tracking-wider bg-orange-500 text-white px-2 py-0.5 rounded-full">

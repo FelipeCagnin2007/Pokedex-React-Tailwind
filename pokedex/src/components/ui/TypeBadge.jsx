@@ -1,3 +1,8 @@
+import { 
+  Flame, Droplets, Leaf, Zap, Snowflake, Swords, Skull, Mountain, 
+  Wind, Eye, Bug, Hexagon, Ghost, ShieldAlert, Moon, Cog, Sparkles, Circle
+} from 'lucide-react';
+
 const TYPE_STYLES = {
   normal:   'bg-slate-400 text-white',
   fire:     'bg-orange-500 text-white',
@@ -19,30 +24,30 @@ const TYPE_STYLES = {
   fairy:    'bg-pink-400 text-white',
 };
 
-const TYPE_EMOJIS = {
-  fire:     '🔥',
-  water:    '💧',
-  grass:    '🌿',
-  electric: '⚡',
-  ice:      '❄️',
-  fighting: '🥊',
-  poison:   '☠️',
-  ground:   '⛰️',
-  flying:   '🌬️',
-  psychic:  '🔮',
-  bug:      '🐛',
-  rock:     '🪨',
-  ghost:    '👻',
-  dragon:   '🐉',
-  dark:     '🌑',
-  steel:    '⚙️',
-  fairy:    '✨',
-  normal:   '⚪',
+const TYPE_ICONS = {
+  fire:     Flame,
+  water:    Droplets,
+  grass:    Leaf,
+  electric: Zap,
+  ice:      Snowflake,
+  fighting: Swords,
+  poison:   Skull,
+  ground:   Mountain,
+  flying:   Wind,
+  psychic:  Eye,
+  bug:      Bug,
+  rock:     Hexagon,
+  ghost:    Ghost,
+  dragon:   ShieldAlert,
+  dark:     Moon,
+  steel:    Cog,
+  fairy:    Sparkles,
+  normal:   Circle,
 };
 
 export default function TypeBadge({ type, showEmoji = false, size = 'sm', small = false }) {
   const style = TYPE_STYLES[type] || 'bg-slate-400 text-white';
-  const emoji = TYPE_EMOJIS[type] || '';
+  const Icon = TYPE_ICONS[type] || Circle;
 
   const sizeClass = small
     ? 'px-1.5 py-0.5 text-[9px] gap-0.5'
@@ -55,7 +60,7 @@ export default function TypeBadge({ type, showEmoji = false, size = 'sm', small 
       className={`type-badge ${style} ${sizeClass} capitalize shadow-sm`}
       title={type}
     >
-      {showEmoji && <span className="text-sm leading-none">{emoji}</span>}
+      {showEmoji && <Icon size={small ? 10 : size === 'lg' ? 16 : 12} className="inline mr-1" />}
       {type}
     </span>
   );

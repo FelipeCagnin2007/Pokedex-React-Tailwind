@@ -4,6 +4,7 @@ import Footer from './components/layout/Footer';
 import { AuthProvider } from './context/AuthContext';
 import { SeasonProvider } from './context/SeasonContext';
 import { BattleProvider } from './context/BattleContext';
+import { Frown } from 'lucide-react';
 
 // Pages
 import Home from './pages/Home';
@@ -36,7 +37,7 @@ import BattlePvP from './pages/battle/BattlePvP';
 function NotFound() {
   return (
     <main className="min-h-[60vh] flex flex-col items-center justify-center gap-6 px-4 text-center">
-      <div className="text-8xl animate-bounce">😵</div>
+      <div className="flex justify-center text-slate-400 mb-6"><Frown size={96} className="animate-bounce" /></div>
       <h1 className="font-bold text-slate-900 dark:text-white text-3xl">404</h1>
       <p className="text-slate-500 dark:text-slate-400">Página não encontrada!</p>
       <a href="/" className="btn-primary">← Voltar para Home</a>
