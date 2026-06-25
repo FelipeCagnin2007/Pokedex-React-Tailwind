@@ -74,7 +74,7 @@ export default function BattleCPU() {
           <div className="flex gap-3">
             <button
               onClick={() => setMode('normal')}
-              className={`flex-1 py-3 px-4 rounded-xl border-2 text-sm font-bold transition-all ${
+              className={`flex flex-1 items-center justify-center gap-2 py-3 px-4 rounded-xl border-2 text-sm font-bold transition-all ${
                 mode === 'normal'
                   ? 'border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
                   : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 bg-white dark:bg-slate-800'
@@ -84,7 +84,7 @@ export default function BattleCPU() {
             </button>
             <button
               onClick={() => setMode('seasonal')}
-              className={`flex-1 py-3 px-4 rounded-xl border-2 text-sm font-bold transition-all ${
+              className={`flex flex-1 items-center justify-center gap-2 py-3 px-4 rounded-xl border-2 text-sm font-bold transition-all ${
                 mode === 'seasonal'
                   ? 'border-amber-500 bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
                   : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 bg-white dark:bg-slate-800'
